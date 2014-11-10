@@ -60,8 +60,7 @@ class Client {
     virtual ~Client() = default;
 
 
-    virtual FilmRes query_films(const std::string &query, const bool &general);
-    virtual FilmRes query_recfilms();
+    virtual FilmRes query_films(const std::string &query, int querytype);
 
     /**
      * Cancel any pending queries (this method can be called from a different thread)
@@ -70,8 +69,8 @@ class Client {
 
     virtual Config::Ptr config();
 
-protected:
-    void get(const core::net::Uri::Path &path,
+//protected:
+    virtual void get(const core::net::Uri::Path &path,
              const core::net::Uri::QueryParameters &parameters,
              QJsonDocument &root);
     /**

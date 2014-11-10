@@ -52,65 +52,20 @@ void Client::get(const net::Uri::Path &path,
     }
 }
 
-Client::FilmRes Client::query_films(const string& query, const bool& general) {
+Client::FilmRes Client::query_films(const string& query, int querytype) {
     QJsonDocument root;
 
     /** Build a URI and get the contents */
-    if(general == true)
+    if(querytype == 0){
         get( { "search", "movie"}, { { "query", query }, { "api_key", config_->api_key } }, root);
         /** <root>/search/movie?query=<query>&api_key=<api_key>&language=it */
-    else
+    }else if(querytype == 1){
         get( { "discover", "movie"}, { { "api_key", config_->api_key } }, root);
         /** <root>/discover/movie?api_key=4149363c46a16a04a1d48ad3098197b0 */
-
-    // declare a list of films
-    FilmRes result;
-
-    QVariantMap variant = root.toVariant().toMap();
-    for (const QVariant &i : variant["results"].toList()) {
-        QJsonDocument info;
-
-        QVariantMap item = i.toMap();
-
-        //convert image urls
-        std::string tmp1 = "http://image.tmdb.org/t/p/w300" + item["backdrop_path"].toString().toStdString();
-        std::string tmp2 = "http://image.tmdb.org/t/p/w300" + item["poster_path"].toString().toStdString();
-
-        //get additional film info
-        get( { "movie", item["id"].toString().toStdString()}, { { "api_key", config_->api_key }, { "append_to_response", "trailers" } }, info);
-        /** <root>/movie/<filmid>?api_key=<api_key>&append_to_response=trailers */
-        QVariant infovar = info.toVariant().toMap();
-        QVariantMap infoitem = infovar.toMap();
-        cout << infoitem["trailers"].toString().toStdString() << endl;
-        // We add each result to our list
-        result.films.emplace_back(
-            Film {
-                tmp1,
-                item["id"].toUInt(),
-                item["original_title"].toString().toStdString(),
-                item["release_date"].toString().toStdString(),
-                tmp2,
-                item["popularity"].toDouble(),
-                item["title"].toString().toStdString(),
-                item["vote_average"].toDouble(),
-                item["vote_count"].toUInt(),
-                infoitem["overview"].toString().toStdString(),
-                infoitem["source"].toString().toStdString(),
-                infoitem["status"].toString().toStdString(),
-                infoitem["tagline"].toString().toStdString()
-            }
-        );
-    }
-    return result;
-}
-
-
-
-Client::FilmRes Client::query_recfilms() {
-    QJsonDocument root;
-
+    }else if(querytype == 2){
         get( { "movie", "upcoming"}, {{ "api_key", config_->api_key } }, root);
         /** <root>/movie/upcoming?api_key=<api_key> */
+    }
 
     // declare a list of films
     FilmRes result;
@@ -122,31 +77,34 @@ Client::FilmRes Client::query_recfilms() {
         QVariantMap item = i.toMap();
 
         //convert image urls
-        std::string tmp1 = "http://image.tmdb.org/t/p/w300" + item["backdrop_path"].toString().toStdString();
-        std::string tmp2 = "http://image.tmdb.org/t/p/w300" + item["poster_path"].toString().toStdString();
+        std::string imgtmp1 = "http://image.tmdb.org/t/p/w300" + item["backdrop_path"].toString().toStdString();
+        std::string imgtmp2 = "http://image.tmdb.org/t/p/w154" + item["poster_path"].toString().toStdString();
 
-        //get additional film info
-        get( { "movie", item["id"].toString().toStdString()}, { { "api_key", config_->api_key }, { "append_to_response", "trailers" } }, info);
+        //get additional film info TODO:optimize
+        //get( { "movie", item["id"].toString().toStdString()}, { { "api_key", config_->api_key }, { "append_to_response", "trailers" } }, info);
         /** <root>/movie/<filmid>?api_key=<api_key>&append_to_response=trailers */
-        QVariant infovar = info.toVariant().toMap();
-        QVariantMap infoitem = infovar.toMap();
-        cout << infoitem["trailers"].toString().toStdString() << endl;
+        //QVariantMap infoitem = info.toVariant().toMap();
+        //QVariantMap traileritem;
+        //if(querytype != 2) //WHY DO I NEED THIS!?!?!
+        //    traileritem = infoitem["trailers"].toMap()["youtube"].toList().first().toMap();
+        //end additional film info
+
         // We add each result to our list
         result.films.emplace_back(
             Film {
-                tmp1,
+                imgtmp1,
                 item["id"].toUInt(),
                 item["original_title"].toString().toStdString(),
                 item["release_date"].toString().toStdString(),
-                tmp2,
+                imgtmp2,
                 item["popularity"].toDouble(),
                 item["title"].toString().toStdString(),
                 item["vote_average"].toDouble(),
                 item["vote_count"].toUInt(),
-                infoitem["overview"].toString().toStdString(),
-                infoitem["source"].toString().toStdString(),
-                infoitem["status"].toString().toStdString(),
-                infoitem["tagline"].toString().toStdString()
+                "infoitem[].toString().toStdString()",
+                "https://www.youtube.com/watch?v=",// + traileritem["source"].toString().toStdString(),
+                "infoitem[].toString().toStdString()",
+                "infoitem[].toString().toStdString()"
             }
         );
     }

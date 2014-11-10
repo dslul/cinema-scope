@@ -5,16 +5,20 @@
 #include <unity/scopes/PreviewReply.h>
 #include <unity/scopes/Result.h>
 #include <unity/scopes/VariantBuilder.h>
+#include <unity/scopes/Variant.h>
+#include <QVariantMap>
 
 #include <iostream>
 
 namespace sc = unity::scopes;
 
 using namespace std;
+using namespace api;
 using namespace scope;
 
-Preview::Preview(const sc::Result &result, const sc::ActionMetadata &metadata) :
-    sc::PreviewQueryBase(result, metadata) {
+Preview::Preview(const sc::Result &result, const sc::ActionMetadata &metadata,
+                 Config::Ptr config) :
+    sc::PreviewQueryBase(result, metadata), client_(config) {
 }
 
 void Preview::cancelled() {
@@ -22,6 +26,12 @@ void Preview::cancelled() {
 
 void Preview::run(sc::PreviewReplyProxy const& reply) {
     sc::Result result = PreviewQueryBase::result();
+    QJsonDocument root;
+
+    //additional film information
+    client_.get( { "movie", result["id"].get_string()}, { { "api_key", "4149363c46a16a04a1d48ad3098197b0" }, { "append_to_response", "trailers" } }, root);
+    /** <root>/movie/<filmid>?api_key=<api_key>&append_to_response=trailers */
+    QVariantMap infoitem = root.toVariant().toMap();
 
     sc::ColumnLayout layout1col(1), layout2col(2);
 
@@ -44,15 +54,15 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     //sc::PreviewWidget w_art("imageId", "image");
     //w_art.add_attribute_mapping("source", "art");
 
-    //TODO video section
+    //video section
     sc::PreviewWidget w_video("videoId", "video");
     w_video.add_attribute_mapping("source", "youtubeurl");
     w_video.add_attribute_mapping("screenshot", "backdrop");
 
     //define the summary (storyline) section
     sc::PreviewWidget w_summary("summaryId", "text");
-    w_summary.add_attribute_mapping("title", "tagline");
-    w_summary.add_attribute_mapping("text", "overview");
+    w_summary.add_attribute_value("title", sc::Variant("filmid"));
+    w_summary.add_attribute_value("text", sc::Variant(infoitem["overview"].toString().toStdString()));
 
     // Define the actions section
     sc::PreviewWidget w_actions("actionsId", "actions");

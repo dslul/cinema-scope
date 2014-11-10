@@ -39,7 +39,7 @@ sc::SearchQueryBase::UPtr Scope::search(const sc::CannedQuery &query,
 sc::PreviewQueryBase::UPtr Scope::preview(sc::Result const& result,
                                           sc::ActionMetadata const& metadata) {
     // Boilerplate construction of Preview
-    return sc::PreviewQueryBase::UPtr(new Preview(result, metadata));
+    return sc::PreviewQueryBase::UPtr(new Preview(result, metadata, config_));
 }
 
 #define EXPORT __attribute__ ((visibility ("default")))

@@ -79,11 +79,11 @@ void Query::run(sc::SearchReplyProxy const& reply) {
 
         if (query_string.empty()) {
             // If the string is empty show default
-            filmslist = client_.query_films("", false);
-            filmslist2 = client_.query_recfilms();
+            filmslist = client_.query_films("", 1);
+            filmslist2 = client_.query_films("", 2);
         } else {
             // otherwise, use the query string
-            filmslist = client_.query_films(query_string, true);
+            filmslist = client_.query_films(query_string, 0);
         }
         // Register a category for tracks
         auto films_cat = reply->register_category("topvoted", "Featured", "",
@@ -98,6 +98,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
             res.set_title(flm.title);
             // Set the rest of the attributes, art, artist, etc.
             res.set_art(flm.poster_path);
+            res["id"] = std::to_string(flm.id);
             res["backdrop"] = flm.backdrop_path;
             res["tagline"] = flm.tagline;
             res["overview"] = flm.overview;
