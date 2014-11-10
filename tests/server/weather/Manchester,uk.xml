@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<current>
+<city id="2643123" name="Manchester">
+<coord lon="-2.24" lat="53.48"/>
+<country>GB</country>
+<sun rise="2014-10-29T07:03:13" set="2014-10-29T16:42:04"/>
+</city>
+<temperature value="17.35" min="17" max="18" unit="celsius"/>
+<humidity value="77" unit="%"/>
+<pressure value="1016" unit="hPa"/>
+<wind>
+<speed value="3.6" name="Gentle Breeze"/>
+<direction value="110" code="ESE" name="East-southeast"/>
+</wind>
+<clouds value="75" name="broken clouds"/>
+<visibility/>
+<precipitation mode="no"/>
+<weather number="802" value="scattered clouds" icon="03d"/>
+<lastupdate value="2014-10-29T15:59:18"/>
+</current>

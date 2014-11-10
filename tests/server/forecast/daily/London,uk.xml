@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<weatherdata>
+  <location>
+    <name>London</name>
+    <type/>
+    <country>GB</country>
+    <timezone/>
+    <location altitude="0" latitude="51.50853" longitude="-0.12574" geobase="geonames" geobaseid="0"/>
+  </location>
+  <credit/>
+  <meta>
+    <lastupdate/>
+    <calctime>0.1469</calctime>
+    <nextupdate/>
+  </meta>
+  <sun rise="2014-10-29T06:49:36" set="2014-10-29T16:38:47"/>
+  <forecast>
+    <time day="2014-10-29">
+      <symbol number="500" name="light rain" var="10d"/>
+      <precipitation value="2" type="rain"/>
+      <windDirection deg="54" code="NE" name="NorthEast"/>
+      <windSpeed mps="4.21" name="Gentle Breeze"/>
+      <temperature day="23.33" min="18.84" max="25.09" night="18.84" eve="24.17" morn="20.76"/>
+      <pressure unit="hPa" value="1020.35"/>
+      <humidity value="98" unit="%"/>
+      <clouds value="overcast clouds" all="92" unit="%"/>
+    </time>
+    <time day="2014-10-30">
+      <symbol number="500" name="moderate rain" var="10d"/>
+      <precipitation value="0.29" type="rain"/>
+      <windDirection deg="202" code="SSW" name="South-southwest"/>
+      <windSpeed mps="4.28" name="Gentle Breeze"/>
+      <temperature day="19.44" min="15.54" max="20.86" night="15.54" eve="18.28" morn="16.21"/>
+      <pressure unit="hPa" value="1010.57"/>
+      <humidity value="97" unit="%"/>
+      <clouds value="clear sky" all="5" unit="%"/>
+    </time>
+    <time day="2014-10-31">
+      <symbol number="802" name="scattered clouds" var="03d"/>
+      <precipitation/>
+      <windDirection deg="168" code="SSE" name="South-southeast"/>
+      <windSpeed mps="5.63" name="Moderate breeze"/>
+      <temperature day="18.78" min="13.19" max="19.58" night="13.19" eve="18.95" morn="14.03"/>
+      <pressure unit="hPa" value="1010.78"/>
+      <humidity value="83" unit="%"/>
+      <clouds value="few clouds" all="13" unit="%"/>
+    </time>
+    <time day="2014-11-01">
+      <symbol number="501" name="moderate rain" var="10d"/>
+      <precipitation value="0.61" type="rain"/>
+      <windDirection deg="198" code="SSW" name="South-southwest"/>
+      <windSpeed mps="7.49" name="Moderate breeze"/>
+      <temperature day="18.09" min="13.46" max="18.09" night="13.46" eve="16.58" morn="13.91"/>
+      <pressure unit="hPa" value="1002.33"/>
+      <humidity value="67" unit="%"/>
+      <clouds value="scattered clouds" all="40" unit="%"/>
+    </time>
+    <time day="2014-11-02">
+      <symbol number="502" name="heavy intensity rain" var="10d"/>
+      <precipitation value="2.44" type="rain"/>
+      <windDirection deg="169" code="S" name="South"/>
+      <windSpeed mps="9.31" name="Fresh Breeze"/>
+      <temperature day="17.38" min="15.39" max="17.38" night="16.3" eve="17.03" morn="15.39"/>
+      <pressure unit="hPa" value="1008.2"/>
+      <humidity value="0" unit="%"/>
+      <clouds value="clear sky" all="9" unit="%"/>
+    </time>
+    <time day="2014-11-03">
+      <symbol number="501" name="moderate rain" var="10d"/>
+      <precipitation value="6.61" type="rain"/>
+      <windDirection deg="158" code="SSE" name="South-southeast"/>
+      <windSpeed mps="5.53" name="Moderate breeze"/>
+      <temperature day="18.44" min="16.17" max="18.44" night="16.83" eve="18.02" morn="16.17"/>
+      <pressure unit="hPa" value="1009.94"/>
+      <humidity value="0" unit="%"/>
+      <clouds value="overcast clouds" all="90" unit="%"/>
+    </time>
+    <time day="2014-11-04">
+      <symbol number="500" name="light rain" var="10d"/>
+      <precipitation value="0.5" type="rain"/>
+      <windDirection deg="296" code="WNW" name="West-northwest"/>
+      <windSpeed mps="5.03" name="Gentle Breeze"/>
+      <temperature day="18.8" min="16.67" max="19.02" night="16.77" eve="19.02" morn="16.67"/>
+      <pressure unit="hPa" value="1013.17"/>
+      <humidity value="0" unit="%"/>
+      <clouds value="broken clouds" all="75" unit="%"/>
+    </time>
+  </forecast>
+</weatherdata>

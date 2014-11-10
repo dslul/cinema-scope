@@ -1,0 +1,2 @@
+{"coord":{"lon":-2.24,"lat":53.48},"sys":{"type":1,"id":5060,"message":0.2423,"country":"GB","sunrise":1407386141,"sunset":1407441219},"weather":[{"id":802,"main":"Clouds","description":"scattered clouds","icon":"03d"}],"base":"cmc stations","main":{"temp":17.35,"pressure":1016,"humidity":77,"temp_min":17,"temp_max":18},"wind":{"speed":2.6,"deg":20,"var_beg":330,"var_end":80},"clouds":{"all":40},"dt":1407408600,"id":2643123,"name":"Manchester","cod":200}
+
