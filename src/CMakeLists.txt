@@ -2,8 +2,8 @@
 # Put the ini file in the build directory next to the scope
 # .so file so test tools can find both easily.
 configure_file(
-  "${CMAKE_SOURCE_DIR}/data/com.ubuntu.developer.dslul.cinema_cinema.ini"
-  "${CMAKE_CURRENT_BINARY_DIR}/com.ubuntu.developer.dslul.cinema_cinema.ini"
+  "${CMAKE_SOURCE_DIR}/data/com.ubuntu.developer.dslul.cinema-scope_cinema.ini"
+  "${CMAKE_CURRENT_BINARY_DIR}/com.ubuntu.developer.dslul.cinema-scope_cinema.ini"
   @ONLY
 )
 
@@ -65,7 +65,7 @@ qt5_use_modules(
 set_target_properties(
   scope
   PROPERTIES
-    OUTPUT_NAME "com.ubuntu.developer.dslul.cinema_cinema"
+    OUTPUT_NAME "com.ubuntu.developer.dslul.cinema-scope_cinema"
 )
 
 # Install the scope shared library

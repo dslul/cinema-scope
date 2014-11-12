@@ -35,12 +35,6 @@ class Client {
         std::string title;          //title according to language
         double vote_average;
         unsigned int vote_count;    //number of votes
-        //additional info
-        std::string overview;
-        std::string youtubeurl;
-        std::string status;
-        std::string tagline;
-        //backdrop images
     };
 
     /**
@@ -60,7 +54,7 @@ class Client {
     virtual ~Client() = default;
 
 
-    virtual FilmRes query_films(const std::string &query, int querytype);
+    virtual FilmRes query_films(const std::string &query, int querytype, std::string lang);
 
     /**
      * Cancel any pending queries (this method can be called from a different thread)
@@ -72,7 +66,7 @@ class Client {
 //protected:
     virtual void get(const core::net::Uri::Path &path,
              const core::net::Uri::QueryParameters &parameters,
-             QJsonDocument &root);
+             QJsonDocument &root, std::string &apiroot);
     /**
      * Progress callback that allows the query to cancel pending HTTP requests.
      */

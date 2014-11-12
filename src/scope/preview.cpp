@@ -27,11 +27,20 @@ void Preview::cancelled() {
 void Preview::run(sc::PreviewReplyProxy const& reply) {
     sc::Result result = PreviewQueryBase::result();
     QJsonDocument root;
-
-    //additional film information
-    client_.get( { "movie", result["id"].get_string()}, { { "api_key", "4149363c46a16a04a1d48ad3098197b0" }, { "append_to_response", "trailers" } }, root);
+    std::string ytsource;
+    //additional film info
+    client_.get( { "movie", result["id"].get_string()}, { { "api_key", client_.config_->moviedb_key }, { "append_to_response", "trailers" }, {"language", result["lang"].get_string()} }, root, client_.config_->moviedbroot);
     /** <root>/movie/<filmid>?api_key=<api_key>&append_to_response=trailers */
     QVariantMap infoitem = root.toVariant().toMap();
+    QVariant trailers = infoitem["trailers"].toMap()["youtube"];
+    QVariantMap traileritem;
+    if(trailers.toList().isEmpty())//ugliest workaround ever seen
+        ytsource = "";
+    else{
+        traileritem = trailers.toList().first().toMap();
+        ytsource = "https://www.youtube.com/watch?v=" + traileritem["source"].toString().toStdString();
+    }
+    //end additional film info
 
     sc::ColumnLayout layout1col(1), layout2col(2);
 
@@ -56,12 +65,12 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
 
     //video section
     sc::PreviewWidget w_video("videoId", "video");
-    w_video.add_attribute_mapping("source", "youtubeurl");
+    w_video.add_attribute_value("source", sc::Variant(ytsource));
     w_video.add_attribute_mapping("screenshot", "backdrop");
 
     //define the summary (storyline) section
     sc::PreviewWidget w_summary("summaryId", "text");
-    w_summary.add_attribute_value("title", sc::Variant("filmid"));
+    w_summary.add_attribute_value("title", sc::Variant(infoitem["tagline"].toString().toStdString()));
     w_summary.add_attribute_value("text", sc::Variant(infoitem["overview"].toString().toStdString()));
 
     // Define the actions section

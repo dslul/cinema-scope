@@ -17,8 +17,8 @@ Client::Client(Config::Ptr config) :
     config_(config), cancelled_(false) {
 }
 
-void Client::get(const net::Uri::Path &path,
-                 const net::Uri::QueryParameters &parameters, QJsonDocument &root) {
+void Client::get(const net::Uri::Path &path, const net::Uri::QueryParameters &parameters,
+                 QJsonDocument &root, std::string &apiroot) {
     // Create a new HTTP client
     auto client = http::make_client();
 
@@ -26,7 +26,7 @@ void Client::get(const net::Uri::Path &path,
     http::Request::Configuration configuration;
 
     // Build the URI from its components
-    net::Uri uri = net::make_uri(config_->apiroot, path, parameters);
+    net::Uri uri = net::make_uri(apiroot, path, parameters);
     configuration.uri = client->uri_to_string(uri);
 
     // Give out a user agent string
@@ -48,22 +48,21 @@ void Client::get(const net::Uri::Path &path,
         // Parse the JSON from the response
         root = QJsonDocument::fromJson(response.body.c_str());
     } catch (net::Error &) {
-        //TODO: handle net error
     }
 }
 
-Client::FilmRes Client::query_films(const string& query, int querytype) {
+Client::FilmRes Client::query_films(const string& query, int querytype, std::string lang) {
     QJsonDocument root;
 
     /** Build a URI and get the contents */
     if(querytype == 0){
-        get( { "search", "movie"}, { { "query", query }, { "api_key", config_->api_key } }, root);
+        get( { "search", "movie"}, {{"query", query}, {"api_key", config_->moviedb_key}, {"language", lang}}, root, config_->moviedbroot);
         /** <root>/search/movie?query=<query>&api_key=<api_key>&language=it */
     }else if(querytype == 1){
-        get( { "discover", "movie"}, { { "api_key", config_->api_key } }, root);
+        get( { "discover", "movie"}, { { "api_key", config_->moviedb_key }, {"language", lang} }, root, config_->moviedbroot);
         /** <root>/discover/movie?api_key=4149363c46a16a04a1d48ad3098197b0 */
     }else if(querytype == 2){
-        get( { "movie", "upcoming"}, {{ "api_key", config_->api_key } }, root);
+        get( { "movie", "upcoming"}, {{ "api_key", config_->moviedb_key }, {"language", lang} }, root, config_->moviedbroot);
         /** <root>/movie/upcoming?api_key=<api_key> */
     }
 
@@ -72,39 +71,24 @@ Client::FilmRes Client::query_films(const string& query, int querytype) {
 
     QVariantMap variant = root.toVariant().toMap();
     for (const QVariant &i : variant["results"].toList()) {
-        QJsonDocument info;
-
         QVariantMap item = i.toMap();
-
-        //convert image urls
-        std::string imgtmp1 = "http://image.tmdb.org/t/p/w300" + item["backdrop_path"].toString().toStdString();
-        std::string imgtmp2 = "http://image.tmdb.org/t/p/w154" + item["poster_path"].toString().toStdString();
-
-        //get additional film info TODO:optimize
-        //get( { "movie", item["id"].toString().toStdString()}, { { "api_key", config_->api_key }, { "append_to_response", "trailers" } }, info);
-        /** <root>/movie/<filmid>?api_key=<api_key>&append_to_response=trailers */
-        //QVariantMap infoitem = info.toVariant().toMap();
-        //QVariantMap traileritem;
-        //if(querytype != 2) //WHY DO I NEED THIS!?!?!
-        //    traileritem = infoitem["trailers"].toMap()["youtube"].toList().first().toMap();
-        //end additional film info
-
+        std::string posterimg = item["poster_path"].toString().toStdString();
+        if(posterimg.empty())
+            posterimg = "http://www.atmos.washington.edu/~carey/images/notFound.png";
+        else
+            posterimg = "http://image.tmdb.org/t/p/w154" + posterimg;
         // We add each result to our list
         result.films.emplace_back(
             Film {
-                imgtmp1,
+                "http://image.tmdb.org/t/p/w300" + item["backdrop_path"].toString().toStdString(),
                 item["id"].toUInt(),
                 item["original_title"].toString().toStdString(),
                 item["release_date"].toString().toStdString(),
-                imgtmp2,
+                posterimg,
                 item["popularity"].toDouble(),
                 item["title"].toString().toStdString(),
                 item["vote_average"].toDouble(),
-                item["vote_count"].toUInt(),
-                "infoitem[].toString().toStdString()",
-                "https://www.youtube.com/watch?v=",// + traileritem["source"].toString().toStdString(),
-                "infoitem[].toString().toStdString()",
-                "infoitem[].toString().toStdString()"
+                item["vote_count"].toUInt()
             }
         );
     }

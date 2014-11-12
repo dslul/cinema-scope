@@ -23,7 +23,7 @@ void Scope::start(string const&) {
     // Under test we set a different API root
     char *apiroot = getenv("NETWORK_SCOPE_APIROOT");
     if (apiroot) {
-        config_->apiroot = apiroot;
+        config_->moviedbroot = apiroot;
     }
 }
 

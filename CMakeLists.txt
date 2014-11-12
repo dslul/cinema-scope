@@ -1,4 +1,4 @@
-project(cinema CXX)
+project(cinema-scope CXX)
 cmake_minimum_required(VERSION 2.8.10)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_MODULE_PATH}")
 
@@ -55,11 +55,11 @@ set(UBUNTU_PROJECT_TYPE "Scope" CACHE INTERNAL "Tells QtCreator this is a Scope 
 # Important project paths
 set(CMAKE_INSTALL_PREFIX /)
 set(SCOPE_INSTALL_DIR "/cinema")
-set(GETTEXT_PACKAGE "cinema")
+set(GETTEXT_PACKAGE "cinema-scope")
 
 # If we need to refer to the scope's name or package in code, these definitions will help
-add_definitions(-DPACKAGE_NAME="com.ubuntu.developer.dslul.cinema")
-add_definitions(-DSCOPE_NAME="com.ubuntu.developer.dslul.cinema_cinema")
+add_definitions(-DPACKAGE_NAME="com.ubuntu.developer.dslul.cinema-scope")
+add_definitions(-DSCOPE_NAME="com.ubuntu.developer.dslul.cinema-scope_cinema")
 add_definitions(-DGETTEXT_PACKAGE="${GETTEXT_PACKAGE}")
 
 #This command figures out the target architecture and puts it into the manifest file
