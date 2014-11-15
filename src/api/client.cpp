@@ -6,6 +6,7 @@
 #include <core/net/http/response.h>
 #include <QVariantMap>
 #include <iostream>
+#include <iomanip>
 
 namespace http = core::net::http;
 namespace net = core::net;
@@ -51,20 +52,23 @@ void Client::get(const net::Uri::Path &path, const net::Uri::QueryParameters &pa
     }
 }
 
-Client::FilmRes Client::query_films(const string& query, int querytype, std::string lang) {
+Client::FilmRes Client::query_films(const std::string &movie_or_tv, const string& query,
+                                    int querytype, std::string department, std::string lang) {
     QJsonDocument root;
 
     /** Build a URI and get the contents */
-    if(querytype == 0){
-        get( { "search", "movie"}, {{"query", query}, {"api_key", config_->moviedb_key}, {"language", lang}}, root, config_->moviedbroot);
+    if(querytype == 0){ //search done by button
+        get( { "search", movie_or_tv}, {{"query", query}, {"api_key", config_->moviedb_key}, {"search_type", "ngram"}, {"language", lang}}, root, config_->moviedbroot);
         /** <root>/search/movie?query=<query>&api_key=<api_key>&language=it */
     }else if(querytype == 1){
-        get( { "discover", "movie"}, { { "api_key", config_->moviedb_key }, {"language", lang} }, root, config_->moviedbroot);
-        /** <root>/discover/movie?api_key=4149363c46a16a04a1d48ad3098197b0 */
-    }else if(querytype == 2){
-        get( { "movie", "upcoming"}, {{ "api_key", config_->moviedb_key }, {"language", lang} }, root, config_->moviedbroot);
+        get( { "discover", movie_or_tv}, { { "api_key", config_->moviedb_key }, {"with_genres", department}, {"language", lang} }, root, config_->moviedbroot);
+        /** <root>/discover/movie?api_key=<api-key> */
+    }else if(querytype == 2 && movie_or_tv == "movie"){
+        get( { "movie", "upcoming"}, {{ "api_key", config_->moviedb_key }, {"with_genres", department}, {"language", lang} }, root, config_->moviedbroot);
         /** <root>/movie/upcoming?api_key=<api_key> */
-    }
+    }else
+        get( { "tv", "airing_today"}, {{ "api_key", config_->moviedb_key }, {"with_genres", department}, {"language", lang} }, root, config_->moviedbroot);
+        /** <root>/tv/airing_today?api_key=<api-key>&language=en */
 
     // declare a list of films
     FilmRes result;
@@ -73,20 +77,29 @@ Client::FilmRes Client::query_films(const string& query, int querytype, std::str
     for (const QVariant &i : variant["results"].toList()) {
         QVariantMap item = i.toMap();
         std::string posterimg = item["poster_path"].toString().toStdString();
+        std::string backdropimg = item["backdrop_path"].toString().toStdString();
         if(posterimg.empty())
             posterimg = "http://www.atmos.washington.edu/~carey/images/notFound.png";
         else
-            posterimg = "http://image.tmdb.org/t/p/w154" + posterimg;
+            posterimg = "http://image.tmdb.org/t/p/w300" + posterimg;
+        if(backdropimg.empty())
+            backdropimg = posterimg;
+        else
+            backdropimg = "http://image.tmdb.org/t/p/w300" + backdropimg;
         // We add each result to our list
+        std::string title = item["title"].toString().toStdString();
+        if(title == "")
+            title = item["name"].toString().toStdString();
+
         result.films.emplace_back(
             Film {
-                "http://image.tmdb.org/t/p/w300" + item["backdrop_path"].toString().toStdString(),
+                backdropimg,
                 item["id"].toUInt(),
                 item["original_title"].toString().toStdString(),
                 item["release_date"].toString().toStdString(),
                 posterimg,
                 item["popularity"].toDouble(),
-                item["title"].toString().toStdString(),
+                title,
                 item["vote_average"].toDouble(),
                 item["vote_count"].toUInt()
             }
@@ -94,6 +107,20 @@ Client::FilmRes Client::query_films(const string& query, int querytype, std::str
     }
     return result;
 }
+
+//not a priority
+//std::deque<std::string> Client::query_deps(std::string& type) {
+//    QJsonDocument root;
+//    std::deque<std::string> departments;
+
+//    get( { "genre", type, "list"}, {{"api_key", config_->moviedb_key}}, root);
+//    <root>/genre/<movie||tv>/list?api_key=<api_key>
+//    QVariantMap returnMap = root.toVariant().toMap();
+//    for (QVariantMap::const_iterator iter = returnMap.begin(); iter != returnMap.end(); ++iter) {
+//        departments.emplace_back(iter.key().toStdString());
+//    }
+//    return departments;
+//}
 
 
 http::Request::Progress::Next Client::progress_report(

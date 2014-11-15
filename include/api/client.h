@@ -54,7 +54,10 @@ class Client {
     virtual ~Client() = default;
 
 
-    virtual FilmRes query_films(const std::string &query, int querytype, std::string lang);
+    virtual FilmRes query_films(const std::string &movie_or_tv, const std::string &query,
+                                int querytype, std::string department, std::string lang);
+
+//    virtual std::deque<std::string> query_deps(std::string &type);
 
     /**
      * Cancel any pending queries (this method can be called from a different thread)
