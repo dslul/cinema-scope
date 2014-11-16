@@ -33,134 +33,163 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     QJsonDocument root;
     int j=0;
     std::string ytsource = "", movie_or_tv = result["movie_or_tv"].get_string(), append,
-            runtime, genres, networkstr, in_production, usr1str, usr2str;
+            runtime, genres, networkstr, in_production, usr1str, usr2str, tagline, overview;
     bool isMovie = (movie_or_tv == "movie") ? true : false;
+    bool isActor = (movie_or_tv == "person") ? true : false;
     //movie and tv specific query strings
     QString trail1, trail2, trail3, networks;
-    if(isMovie){trail1="trailers";trail2="youtube";trail3="source"; append="trailers";
+    if(isMovie && !isActor){trail1="trailers";trail2="youtube";trail3="source"; append="trailers,reviews";
         networks="production_companies";networkstr="Production companies: ";}
-    else {trail1="videos",trail2="results",trail3="key";append="videos";networks="networks";networkstr="Networks: ";}
+    else if(!isMovie && !isActor) {trail1="videos",trail2="results",trail3="key";append="videos";networks="networks";networkstr="Networks: ";}
+    else append="movie_credits";
     client_.get({result["movie_or_tv"].get_string(), result["id"].get_string()}, { { "api_key", client_.config_->moviedb_key }, { "append_to_response", append }, {"language", result["lang"].get_string()} }, root, client_.config_->moviedbroot);
     /** <root>/movie_or_tv/<filmid>?api_key=<api_key>&append_to_response=trailers */
     //get trailer video url
     QVariantMap infoitem = root.toVariant().toMap();
-        QVariant trailers = infoitem[trail1].toMap()[trail2];
-        if(!(trailers.toList().isEmpty())){
-            QVariantMap traileritem;
-            traileritem = trailers.toList().first().toMap();
-            ytsource = "https://www.youtube.com/watch?v=" + traileritem[trail3].toString().toStdString();
-        }
-    //retrieve all the genres
-    for (const QVariant &i : infoitem["genres"].toList()) {
-        QVariantMap item = i.toMap();
-        genres += item["name"].toString().toStdString() + ", ";
-    }if(!genres.empty()) {genres.pop_back();genres.pop_back();}
-    //retrieve all the networks or production companies
-    for (const QVariant &i : infoitem[networks].toList()) {
-        QVariantMap item = i.toMap();
-        networkstr += item["name"].toString().toStdString() + ", ";
-        j++;
-    }if(j!=0) {networkstr.pop_back();networkstr.pop_back();} else networkstr+="Unknown";
-    //calculate runtime and other specific things
-    int hours, min;
-    if(isMovie){
-        min = infoitem["runtime"].toInt();
-    hours = floor(min/60); min = min - 60*hours;
-    runtime = to_string(hours) + "h " + to_string(min) + "m";
-    //other
-    usr1str = infoitem["budget"].toString().toStdString();
-    if(usr1str.empty() || usr1str == "0")
-        usr1str = "Budget: unknown";
-    else usr1str = "Budget: " + usr1str;
-    usr2str = infoitem["revenue"].toString().toStdString();
-    if(usr2str.empty() || usr2str == "0")
-        usr2str = "Revenue: unknown";
-    else usr2str = "Revenue: " + usr2str;
-    } else{
-        in_production = (infoitem["in_production"].toString().toStdString() == "true") ? "✔" : "no";
-        //other
-        usr1str = infoitem["number_of_seasons"].toString().toStdString();
-        if(usr1str.empty())
-            usr1str = "Number of seasons: unknown";
-        else usr1str = "Number of seasons: " + usr1str;
-        usr2str = infoitem["number_of_episodes"].toString().toStdString();
-        if(usr2str.empty())
-            usr2str = "Number of episodes: unknown";
-        else usr2str = "Number of episodes: " + usr2str;
+    QVariant trailers = infoitem[trail1].toMap()[trail2];
+    if(!(trailers.toList().isEmpty())){
+        QVariantMap traileritem;
+        traileritem = trailers.toList().first().toMap();
+        ytsource = "https://www.youtube.com/watch?v=" + traileritem[trail3].toString().toStdString();
     }
-    //end additional film info
+    if(!isActor){
+        tagline = infoitem["tagline"].toString().toStdString();
+        overview = infoitem["overview"].toString().toStdString();
+        //retrieve all the genres
+        for (const QVariant &i : infoitem["genres"].toList()) {
+            QVariantMap item = i.toMap();
+            genres += item["name"].toString().toStdString() + ", ";
+        }if(!genres.empty()) {genres.pop_back();genres.pop_back();}
+        //retrieve all the networks or production companies
+        for (const QVariant &i : infoitem[networks].toList()) {
+            QVariantMap item = i.toMap();
+            networkstr += item["name"].toString().toStdString() + ", ";
+            j++;
+        }if(j!=0) {networkstr.pop_back();networkstr.pop_back();} else networkstr+="Unknown";
+        //calculate runtime and other specific things
+        int hours, min;
+        if(isMovie){ //movie info
+            min = infoitem["runtime"].toInt();
+        hours = floor(min/60); min = min - 60*hours;
+        runtime = to_string(hours) + "h " + to_string(min) + "m";
+        //other
+        usr1str = infoitem["budget"].toString().toStdString();
+        if(usr1str.empty() || usr1str == "0")
+            usr1str = "Budget: unknown";
+        else usr1str = "Budget: " + usr1str;
+        usr2str = infoitem["revenue"].toString().toStdString();
+        if(usr2str.empty() || usr2str == "0")
+            usr2str = "Revenue: unknown";
+        else usr2str = "Revenue: " + usr2str;
+        } else{ //tv show info
+            in_production = (infoitem["in_production"].toString().toStdString() == "true") ? "✔" : "no";
+            //other
+            usr1str = infoitem["number_of_seasons"].toString().toStdString();
+            if(usr1str.empty())
+                usr1str = "Number of seasons: unknown";
+            else usr1str = "Number of seasons: " + usr1str;
+            usr2str = infoitem["number_of_episodes"].toString().toStdString();
+            if(usr2str.empty())
+                usr2str = "Number of episodes: unknown";
+            else usr2str = "Number of episodes: " + usr2str;
+        }
+    }else { //actor info
+        overview = infoitem["biography"].toString().toStdString();
 
+    }
 
 
     sc::ColumnLayout layout1col(1), layout2col(2);
-
     // Single column layout
+    if(!isActor)
     layout1col.add_column( { "headerId", "videoId", "ratingId", "genresId", "reldateId",
                              "statusId", "runtimeId", "networksId", "usr1Id", "usr2Id",
-                             "summaryId", "actionsId"});
+                             "summaryId", "actionsId", "revtitleId", "reviewsId"});
+    else layout1col.add_column( {"headerId","imageId", "usr1Id", "galleryId","usr2Id", "summaryId"});
 
     // Two column layout
+    if(!isActor){
     layout2col.add_column( { "videoId", "ratingId", "genresId", "reldateId",
                              "statusId", "runtimeId", "networksId", "usr1Id", "usr2Id"});
-    layout2col.add_column( { "headerId", "summaryId", "actionsId" });
+    layout2col.add_column( { "headerId", "summaryId", "actionsId", "revtitleId", "reviewsId" });
+    }else{layout2col.add_column( {"imageId", "usr1Id", "galleryId" }); layout2col.add_column( {"headerId", "usr2Id", "summaryId" });}
 
     // Register the layouts we just created
     reply->register_layout( { layout1col, layout2col });
 
-    // Define the header section
+    // sections declaration
     sc::PreviewWidget w_header("headerId", "header");
-    // It has title and a subtitle properties
-    w_header.add_attribute_mapping("title", "title");
-
-    //video section
     sc::PreviewWidget w_video("videoId", "video");
-    w_video.add_attribute_value("source", sc::Variant(ytsource));
-    w_video.add_attribute_mapping("screenshot", "backdrop");
-
-    //rating section
+    sc::PreviewWidget w_image("imageId", "image");
+    sc::PreviewWidget w_gallery("galleryId", "gallery");
     sc::PreviewWidget w_rat("ratingId", "reviews");
-    sc::VariantBuilder rat_builder;
-    rat_builder.add_tuple({{"rating", sc::Variant(floor(infoitem["vote_average"].toFloat()+0.5)/2)}});
-    w_rat.add_attribute_value("reviews", rat_builder.end());
-
-
-
-    //FIXME:
     sc::PreviewWidget w_genres("genresId", "text");
-    w_genres.add_attribute_value("title", sc::Variant("Info"));
-    w_genres.add_attribute_value("text", sc::Variant("Genres: " + genres));
-
     sc::PreviewWidget w_reldate("reldateId", "text");
-    if(isMovie)
-        w_reldate.add_attribute_value("text", sc::Variant("Release date: "+infoitem["release_date"].toString().toStdString()));
-    else w_reldate.add_attribute_value("text", sc::Variant("First air date: "+infoitem["first_air_date"].toString().toStdString()));
-
     sc::PreviewWidget w_status("statusId", "text");
-    w_status.add_attribute_value("text", sc::Variant("Status: "+infoitem["status"].toString().toStdString()));
-
     sc::PreviewWidget w_runtime("runtimeId", "text");
-    if(isMovie)
-        w_runtime.add_attribute_value("text", sc::Variant("Runtime: "+ runtime));
-    else w_runtime.add_attribute_value("text", sc::Variant("In production: "+ in_production));
-
     sc::PreviewWidget w_networks("networksId", "text");
-    w_networks.add_attribute_value("text", sc::Variant(networkstr));
-
-    sc::PreviewWidget w_usr1("usr1Id", "text"); //budget OR number of seasons
-    w_usr1.add_attribute_value("text", sc::Variant(usr1str));
-
-    sc::PreviewWidget w_usr2("usr2Id", "text"); //revenue OR number of episodes
-    w_usr2.add_attribute_value("text", sc::Variant(usr2str));
-
-    //define the summary (storyline) section
     sc::PreviewWidget w_summary("summaryId", "text");
-    w_summary.add_attribute_value("title", sc::Variant(infoitem["tagline"].toString().toStdString()));
-    w_summary.add_attribute_value("text", sc::Variant(infoitem["overview"].toString().toStdString()));
+    sc::PreviewWidget w_usr1("usr1Id", "text");                //budget OR number of seasons
+    sc::PreviewWidget w_usr2("usr2Id", "text");                //revenue OR number of episodes
+    sc::PreviewWidget w_revtitle("revtitleId", "text");
+    sc::PreviewWidget w_actions("actionsId", "actions");
+    sc::PreviewWidget w_reviews("reviewsId", "reviews");
 
+//general sections
+    w_header.add_attribute_mapping("title", "title");
+    w_summary.add_attribute_value("title", sc::Variant(tagline));
+    w_summary.add_attribute_value("text", sc::Variant(overview));
+
+
+//movie and tv shows sections
+    if(isActor == false){
+        sc::VariantBuilder rat_builder;
+        sc::VariantBuilder rev_builder;
+        w_video.add_attribute_value("source", sc::Variant(ytsource));
+        w_video.add_attribute_mapping("screenshot", "backdrop");
+        w_genres.add_attribute_value("title", sc::Variant("Info"));
+        w_genres.add_attribute_value("text", sc::Variant("Genres: " + genres));
+        rat_builder.add_tuple({{"rating", sc::Variant(floor(infoitem["vote_average"].toFloat()+0.5)/2)}});
+        w_rat.add_attribute_value("reviews", rat_builder.end());
+        w_status.add_attribute_value("text", sc::Variant("Status: "+infoitem["status"].toString().toStdString()));
+        w_networks.add_attribute_value("text", sc::Variant(networkstr));
+        w_usr1.add_attribute_value("text", sc::Variant(usr1str));
+        w_usr2.add_attribute_value("text", sc::Variant(usr2str));
+//movie specific sections
+        if(isMovie){
+            w_reldate.add_attribute_value("text", sc::Variant("Release date: "+infoitem["release_date"].toString().toStdString()));
+            w_runtime.add_attribute_value("text", sc::Variant("Runtime: "+ runtime));
+            w_revtitle.add_attribute_value("title", sc::Variant("Reviews"));
+            QVariantMap item, inforeviews = infoitem["reviews"].toMap();
+            for (const QVariant &i : inforeviews["results"].toList()) {
+                item = i.toMap();
+                rev_builder.add_tuple({{"author", sc::Variant(item["author"].toString().toStdString())},{"review", sc::Variant(item["content"].toString().toStdString())}});
+            }
+            if(!item.isEmpty()) w_reviews.add_attribute_value("reviews", rev_builder.end());
+            else w_revtitle.add_attribute_value("text", sc::Variant("No reviews avaiable."));
+//tv show specific sections
+        } else {
+            w_reldate.add_attribute_value("text", sc::Variant("First air date: "+infoitem["first_air_date"].toString().toStdString()));
+            w_runtime.add_attribute_value("text", sc::Variant("In production: "+ in_production));
+
+        }
+//actor specific sections
+    }else if(isActor){
+        w_image.add_attribute_mapping("source", "art");
+        sc::VariantArray imgarr;
+        QVariantMap item, inforeviews = infoitem["movie_credits"].toMap();
+        for (const QVariant &i : inforeviews["cast"].toList()) {
+            item = i.toMap(); std::string tmp = item["poster_path"].toString().toStdString();
+            if(!tmp.empty())
+                imgarr.push_back(sc::Variant("http://image.tmdb.org/t/p/w300" + tmp));
+        }
+        w_usr1.add_attribute_value("title", sc::Variant("Acted in these movies"));
+        w_gallery.add_attribute_value("sources", sc::Variant(imgarr));
+        w_usr2.add_attribute_value("title", sc::Variant("Biography"));
+    }
 
 
     // Define the actions section
-    sc::PreviewWidget w_actions("actionsId", "actions");
     sc::VariantBuilder act_builder;
     act_builder.add_tuple({
         {"id", sc::Variant("oncinema")},
@@ -175,6 +204,7 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     w_actions.add_attribute_value("actions", act_builder.end());
 
     // Push each of the sections
-    reply->push( { w_video, w_rat, w_genres, w_reldate, w_status, w_runtime, w_networks, w_usr1, w_usr2,
-                   w_header, w_summary, w_actions });
+    reply->push( { w_video, w_image, w_rat, w_genres, w_reldate, w_status, w_runtime,
+                   w_networks, w_usr1, w_gallery, w_usr2,
+                   w_header, w_summary, w_actions, w_revtitle, w_reviews });
 }

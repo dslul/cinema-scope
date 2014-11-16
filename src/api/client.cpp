@@ -76,13 +76,18 @@ Client::FilmRes Client::query_films(const std::string &movie_or_tv, const string
     QVariantMap variant = root.toVariant().toMap();
     for (const QVariant &i : variant["results"].toList()) {
         QVariantMap item = i.toMap();
-        std::string posterimg = item["poster_path"].toString().toStdString();
-        std::string backdropimg = item["backdrop_path"].toString().toStdString();
+        std::string posterimg, backdropimg;
+        if(movie_or_tv == "person")
+            posterimg = item["profile_path"].toString().toStdString();
+        else{
+            posterimg = item["poster_path"].toString().toStdString();
+            backdropimg = item["backdrop_path"].toString().toStdString();
+        }
         if(posterimg.empty())
             posterimg = "http://www.atmos.washington.edu/~carey/images/notFound.png";
         else
             posterimg = "http://image.tmdb.org/t/p/w300" + posterimg;
-        if(backdropimg.empty())
+        if(backdropimg.empty() && movie_or_tv != "person")
             backdropimg = posterimg;
         else
             backdropimg = "http://image.tmdb.org/t/p/w300" + backdropimg;
@@ -107,20 +112,6 @@ Client::FilmRes Client::query_films(const std::string &movie_or_tv, const string
     }
     return result;
 }
-
-//not a priority
-//std::deque<std::string> Client::query_deps(std::string& type) {
-//    QJsonDocument root;
-//    std::deque<std::string> departments;
-
-//    get( { "genre", type, "list"}, {{"api_key", config_->moviedb_key}}, root);
-//    <root>/genre/<movie||tv>/list?api_key=<api_key>
-//    QVariantMap returnMap = root.toVariant().toMap();
-//    for (QVariantMap::const_iterator iter = returnMap.begin(); iter != returnMap.end(); ++iter) {
-//        departments.emplace_back(iter.key().toStdString());
-//    }
-//    return departments;
-//}
 
 
 http::Request::Progress::Next Client::progress_report(

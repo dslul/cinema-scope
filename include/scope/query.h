@@ -31,6 +31,7 @@ private:
     void initScope();
     std::string s_location;
     std::string s_language;
+    std::string s_homepage;
 
 };
 

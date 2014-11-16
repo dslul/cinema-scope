@@ -94,7 +94,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
         //remove whitespaces
         string query_string = alg::trim_copy(query.query_string());
 
-        Client::FilmRes filmslist, filmslist2;
+        Client::FilmRes filmslist, filmslist2, actorslist;
         //store location
         std::string place;
         if(s_location == ""){ //if location config is null retrieve from gps
@@ -113,7 +113,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
 
         //filters definition
         sc::Filters filters;
-        sc::OptionSelectorFilter::SPtr optionsFilter = sc::OptionSelectorFilter::create("category", "Movies");
+        sc::OptionSelectorFilter::SPtr optionsFilter = sc::OptionSelectorFilter::create("category", s_homepage);
         optionsFilter->set_display_hints(1);
         optionsFilter->add_option("movie", "Movies");
         optionsFilter->add_option("tv", "TV-series");
@@ -127,10 +127,13 @@ void Query::run(sc::SearchReplyProxy const& reply) {
             auto o = *(optionsFilter->active_options(query.filter_state()).begin());
             filterid = o->id();
         }
+        //set filter according to settings
+        if(filterid == "" && s_homepage == "Movies") filterid = "movie";
+        else if(filterid == "" && s_homepage == "TV-series") filterid = "tv";
 
-        //departments definition
+        //departments definition (done by hand for performance reasons)
         sc::Department::SPtr all_depts = sc::Department::create("", query, "All genres");
-        if(filterid == "" || filterid == "movie"){
+        if(filterid == "movie"){
             sc::Department::SPtr dept1 = sc::Department::create("28", query, "Action"); all_depts->add_subdepartment(dept1);
             sc::Department::SPtr dept2 = sc::Department::create("12", query, "Adventure"); all_depts->add_subdepartment(dept2);
             sc::Department::SPtr dept3 = sc::Department::create("16", query, "Animation"); all_depts->add_subdepartment(dept3);
@@ -186,7 +189,6 @@ void Query::run(sc::SearchReplyProxy const& reply) {
             reply->register_departments(all_depts);
         }
 
-        if(filterid == "") filterid = "movie";
         bool query_isempty = query_string.empty();
         if (query_isempty) {
             // If the string is empty show default
@@ -252,16 +254,23 @@ void Query::run(sc::SearchReplyProxy const& reply) {
             }
         } else {
             // otherwise, use the query string
-            filmslist = client_.query_films(filterid, query_string, 0, query.department_id(), s_language);
-            auto films_cat = reply->register_category("search", "", "",
+            filmslist = client_.query_films("movie", query_string, 0, query.department_id(), s_language);
+            filmslist2 = client_.query_films("tv", query_string, 0, query.department_id(), s_language);
+            actorslist = client_.query_films("person", query_string, 0, query.department_id(), s_language);
+            auto films_cat = reply->register_category("searchmovie", "Movies", "",
                 sc::CategoryRenderer(SEARCHFILM_TEMPLATE));
+            auto films_cat2 = reply->register_category("searchtv", "TV series", "",
+                sc::CategoryRenderer(SEARCHFILM_TEMPLATE));
+            auto actors_cat = reply->register_category("searchact", "Actors", "",
+                sc::CategoryRenderer(SEARCHFILM_TEMPLATE));
+            //print film list
             for (const auto &flm : filmslist.films) {
                 sc::CategorisedResult res(films_cat);
                 res.set_uri("http://www.google.com/movies?near=" + place + "&q=" + flm.title);
                 res.set_title(flm.title);
                 res.set_art(flm.poster_path);
                 res["id"] = std::to_string(flm.id);
-                res["movie_or_tv"] = filterid;
+                res["movie_or_tv"] = "movie";
                 res["lang"] = s_language;
                 //set precision 2 to ratings
                 std::ostringstream out;
@@ -271,6 +280,40 @@ void Query::run(sc::SearchReplyProxy const& reply) {
                 else
                     res["ratings"] = "★ " + out.str();
                 res["backdrop"] = flm.backdrop_path;
+
+                if (!reply->push(res))
+                    return;
+            }
+            //print tv shows list
+            for (const auto &flm : filmslist2.films) {
+                sc::CategorisedResult res(films_cat2);
+                res.set_uri("google.com");
+                res.set_title(flm.title);
+                res.set_art(flm.poster_path);
+                res["id"] = std::to_string(flm.id);
+                res["movie_or_tv"] = "tv";
+                res["lang"] = s_language;
+                //set precision 2 to ratings
+                std::ostringstream out;
+                out << std::setprecision(2) << flm.vote_average;
+                if(out.str() == "0")
+                    res["ratings"] = "☆ " + out.str();
+                else
+                    res["ratings"] = "★ " + out.str();
+                res["backdrop"] = flm.backdrop_path;
+
+                if (!reply->push(res))
+                    return;
+            }
+            //print actors list
+            for (const auto &act : actorslist.films) {
+                sc::CategorisedResult res(actors_cat);
+                res.set_uri("google.com");
+                res.set_title(act.title);
+                res.set_art(act.poster_path); //profile_path
+                res["id"] = std::to_string(act.id);
+                res["movie_or_tv"] = "person";
+                res["lang"] = s_language;
 
                 if (!reply->push(res))
                     return;
@@ -301,14 +344,13 @@ void Query::initScope() //init settings
         cerr << "CONFIG EMPTY!" << endl;
 
     s_location = config["location"].get_string();
-    cerr << "location: " << s_location << endl;
 
-    int tmp = config["language"].get_int();
-    if(tmp == 0) s_language = "en";        //don't trust switch he's a bad guy
-    else if(tmp == 1) s_language = "it";
-    else if(tmp == 2) s_language = "de";
-    else if(tmp == 3) s_language = "fr";
+    int home = config["homepage"].get_int();
+    s_homepage = (home==0) ? "Movies" : "TV-series";
 
-    cerr << tmp << endl;
-    cerr << "language: " << s_language << endl;
+    int lang = config["language"].get_int();
+    if(lang == 0) s_language = "en";        //don't trust switch he's a bad guy
+    else if(lang == 1) s_language = "it";
+    else if(lang == 2) s_language = "de";
+    else if(lang == 3) s_language = "fr";
 }
