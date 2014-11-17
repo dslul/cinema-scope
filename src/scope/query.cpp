@@ -190,14 +190,22 @@ void Query::run(sc::SearchReplyProxy const& reply) {
         }
 
         bool query_isempty = query_string.empty();
-        if (query_isempty) {
-            // If the string is empty show default
-            filmslist = client_.query_films(filterid, "", 1, query.department_id(), s_language);
-            filmslist2 = client_.query_films(filterid, "",  2, query.department_id(), s_language);
-            // Register categories for popular and new films
+        if (query_isempty) {    // If the string is empty show default
+            std::string strquery, strcatname;
+            if(filterid=="movie"){
+                strquery = "upcoming";
+                strcatname = "Coming soon";
+            } else {
+                strquery = "airing_today";
+                strcatname = "Airing today on TV";
+            }
+
+            filmslist = client_.query_films(filterid, strquery, 1, query.department_id(), s_language);
+            filmslist2 = client_.query_films(filterid, strquery,  2, query.department_id(), s_language);
+
             auto films_cat = reply->register_category("topvoted", "Featured", "",
                 sc::CategoryRenderer(POPULARFILMS_TEMPLATE));
-            auto films_cat2 = reply->register_category("comingsoon", "Coming soon", "",
+            auto films_cat2 = reply->register_category("comingsoon", strcatname, "",
                 sc::CategoryRenderer(RECENTFILMS_TEMPLATE));
             // register_category(arbitrary category id, header title, header icon, template)
 
@@ -254,6 +262,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
             }
         } else {
             // otherwise, use the query string
+            cerr << query.department_id() << endl;
             filmslist = client_.query_films("movie", query_string, 0, query.department_id(), s_language);
             filmslist2 = client_.query_films("tv", query_string, 0, query.department_id(), s_language);
             actorslist = client_.query_films("person", query_string, 0, query.department_id(), s_language);

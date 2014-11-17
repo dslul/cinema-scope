@@ -52,25 +52,22 @@ void Client::get(const net::Uri::Path &path, const net::Uri::QueryParameters &pa
     }
 }
 
-Client::FilmRes Client::query_films(const std::string &movie_or_tv, const string& query,
-                                    int querytype, std::string department, std::string lang) {
+Client::FilmRes Client::query_films(const string &movie_or_tv, const string& query,
+                                    int querytype, string department, string lang) {
     QJsonDocument root;
 
     /** Build a URI and get the contents */
-    if(querytype == 0){ //search done by button
+    if(querytype == 0){        //search
         get( { "search", movie_or_tv}, {{"query", query}, {"api_key", config_->moviedb_key}, {"search_type", "ngram"}, {"language", lang}}, root, config_->moviedbroot);
         /** <root>/search/movie?query=<query>&api_key=<api_key>&language=it */
-    }else if(querytype == 1){
+    }else if(querytype == 1){  //featured category
         get( { "discover", movie_or_tv}, { { "api_key", config_->moviedb_key }, {"with_genres", department}, {"language", lang} }, root, config_->moviedbroot);
         /** <root>/discover/movie?api_key=<api-key> */
-    }else if(querytype == 2 && movie_or_tv == "movie"){
-        get( { "movie", "upcoming"}, {{ "api_key", config_->moviedb_key }, {"with_genres", department}, {"language", lang} }, root, config_->moviedbroot);
+    }else if(querytype == 2){  //other categories
+        get( {movie_or_tv, query}, {{ "api_key", config_->moviedb_key }, {"with_genres", department}, {"language", lang} }, root, config_->moviedbroot);
         /** <root>/movie/upcoming?api_key=<api_key> */
-    }else
-        get( { "tv", "airing_today"}, {{ "api_key", config_->moviedb_key }, {"with_genres", department}, {"language", lang} }, root, config_->moviedbroot);
-        /** <root>/tv/airing_today?api_key=<api-key>&language=en */
+    }
 
-    // declare a list of films
     FilmRes result;
 
     QVariantMap variant = root.toVariant().toMap();

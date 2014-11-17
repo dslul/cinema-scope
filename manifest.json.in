@@ -1,6 +1,6 @@
 {
     "architecture": "@CLICK_ARCH@",
-    "description": "A simple Unity scope that accesses the network",
+    "description": "Find information on your favourite movies and TV shows!",
     "framework": "ubuntu-sdk-14.10-dev2",
     "hooks": {
         "cinema": {
@@ -10,6 +10,6 @@
     },
     "maintainer": "Daniele <laudanidaniele@gmail.com>",
     "name": "com.ubuntu.developer.dslul.cinema-scope",
-    "title": "cinema-scope",
+    "title": "Cinema",
     "version": "0.1"
 }

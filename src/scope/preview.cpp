@@ -33,14 +33,15 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     QJsonDocument root;
     int j=0;
     std::string ytsource = "", movie_or_tv = result["movie_or_tv"].get_string(), append,
-            runtime, genres, networkstr, in_production, usr1str, usr2str, tagline, overview;
+            runtime, genres, networkstr, caststr, director, in_production, usr1str, usr2str,
+            tagline, overview;
     bool isMovie = (movie_or_tv == "movie") ? true : false;
     bool isActor = (movie_or_tv == "person") ? true : false;
     //movie and tv specific query strings
     QString trail1, trail2, trail3, networks;
-    if(isMovie && !isActor){trail1="trailers";trail2="youtube";trail3="source"; append="trailers,reviews";
+    if(isMovie && !isActor){trail1="trailers";trail2="youtube";trail3="source"; append="trailers,reviews,credits";
         networks="production_companies";networkstr="Production companies: ";}
-    else if(!isMovie && !isActor) {trail1="videos",trail2="results",trail3="key";append="videos";networks="networks";networkstr="Networks: ";}
+    else if(!isMovie && !isActor) {trail1="videos",trail2="results",trail3="key";append="videos,credits";networks="networks";networkstr="Networks: ";}
     else append="movie_credits";
     client_.get({result["movie_or_tv"].get_string(), result["id"].get_string()}, { { "api_key", client_.config_->moviedb_key }, { "append_to_response", append }, {"language", result["lang"].get_string()} }, root, client_.config_->moviedbroot);
     /** <root>/movie_or_tv/<filmid>?api_key=<api_key>&append_to_response=trailers */
@@ -65,7 +66,22 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
             QVariantMap item = i.toMap();
             networkstr += item["name"].toString().toStdString() + ", ";
             j++;
-        }if(j!=0) {networkstr.pop_back();networkstr.pop_back();} else networkstr+="Unknown";
+        }if(j!=0) {networkstr.pop_back();networkstr.pop_back();j=0;} else networkstr+="Unknown";
+        //retrieve cast information
+        QVariantMap infocast = infoitem["credits"].toMap();
+        for (const QVariant &i : infocast["cast"].toList()) {
+            QVariantMap item = i.toMap();
+            caststr += item["name"].toString().toStdString() + ", ";
+            j++;if(j==8) break;
+        }if(j!=0) {caststr.pop_back();caststr.pop_back();j=0;} else caststr+="Unknown";
+        for (const QVariant &i : infocast["crew"].toList()) {
+            QVariantMap item = i.toMap();
+            if(item["job"].toString().toStdString() == "Director"){
+                director = item["name"].toString().toStdString();
+                break;
+            }
+            j++;
+        }if(j==0) director = "Unknown";
         //calculate runtime and other specific things
         int hours, min;
         if(isMovie){ //movie info
@@ -104,14 +120,16 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     sc::ColumnLayout layout1col(1), layout2col(2);
     // Single column layout
     if(!isActor)
-    layout1col.add_column( { "headerId", "videoId", "ratingId", "genresId", "reldateId", "expId",
+    layout1col.add_column( { "headerId", "videoId", "ratingId", "genresId", "castId", "directorId",
+                             "reldateId", "expId",
                              "statusId", "runtimeId", "networksId", "usr1Id", "usr2Id",
                              "summaryId", "actionsId", "revtitleId", "reviewsId"});
     else layout1col.add_column( {"headerId","imageId", "galleryId", "summaryId"});
 
     // Two column layout
     if(!isActor){
-    layout2col.add_column( { "videoId", "ratingId", "genresId", "reldateId", "expId",
+    layout2col.add_column( { "videoId", "ratingId", "genresId", "castId", "directorId", "reldateId",
+                             "expId",
                              "statusId", "runtimeId", "networksId", "usr1Id", "usr2Id"});
     layout2col.add_column( { "headerId", "summaryId", "actionsId", "revtitleId", "reviewsId" });
     }else{layout2col.add_column( {"imageId", "galleryId" }); layout2col.add_column( {"headerId", "summaryId" });}
@@ -127,6 +145,8 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     sc::PreviewWidget w_expandable("expId", "expandable");
     sc::PreviewWidget w_rat("ratingId", "reviews");
     sc::PreviewWidget w_genres("genresId", "text");
+    sc::PreviewWidget w_cast("castId", "text");
+    sc::PreviewWidget w_director("directorId", "text");
     sc::PreviewWidget w_reldate("reldateId", "text");
     sc::PreviewWidget w_status("statusId", "text");
     sc::PreviewWidget w_runtime("runtimeId", "text");
@@ -151,6 +171,8 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
         w_video.add_attribute_value("source", sc::Variant(ytsource));
         w_video.add_attribute_mapping("screenshot", "backdrop");
         w_genres.add_attribute_value("text", sc::Variant("Genres: " + genres));
+        w_cast.add_attribute_value("text", sc::Variant("Cast: " + caststr));
+        w_director.add_attribute_value("text", sc::Variant("Director: " + director));
         rat_builder.add_tuple({{"rating", sc::Variant(floor(infoitem["vote_average"].toFloat()+0.5)/2)}});
         w_rat.add_attribute_value("reviews", rat_builder.end());
         w_status.add_attribute_value("text", sc::Variant("Status: "+infoitem["status"].toString().toStdString()));
@@ -178,6 +200,8 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
 
         }
         w_expandable.add_widget(w_genres);
+        w_expandable.add_widget(w_cast);
+        w_expandable.add_widget(w_director);
         w_expandable.add_widget(w_status);
         w_expandable.add_widget(w_reldate);
         w_expandable.add_widget(w_runtime);
