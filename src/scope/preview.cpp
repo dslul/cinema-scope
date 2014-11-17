@@ -70,18 +70,20 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
         int hours, min;
         if(isMovie){ //movie info
             min = infoitem["runtime"].toInt();
-        hours = floor(min/60); min = min - 60*hours;
-        runtime = to_string(hours) + "h " + to_string(min) + "m";
-        //other
-        usr1str = infoitem["budget"].toString().toStdString();
-        if(usr1str.empty() || usr1str == "0")
-            usr1str = "Budget: unknown";
-        else usr1str = "Budget: " + usr1str;
-        usr2str = infoitem["revenue"].toString().toStdString();
-        if(usr2str.empty() || usr2str == "0")
-            usr2str = "Revenue: unknown";
-        else usr2str = "Revenue: " + usr2str;
-        } else{ //tv show info
+            if(min == 0) runtime = "unknown";
+            else {
+                hours = floor(min/60); min = min - 60*hours;
+                runtime = to_string(hours) + "h " + to_string(min) + "m";}
+            //other
+            usr1str = infoitem["budget"].toString().toStdString();
+            if(usr1str.empty() || usr1str == "0")
+                usr1str = "Budget: unknown";
+            else usr1str = "Budget: " + usr1str;
+            usr2str = infoitem["revenue"].toString().toStdString();
+            if(usr2str.empty() || usr2str == "0")
+                usr2str = "Revenue: unknown";
+            else usr2str = "Revenue: " + usr2str;
+        } else { //tv show info
             in_production = (infoitem["in_production"].toString().toStdString() == "true") ? "✔" : "no";
             //other
             usr1str = infoitem["number_of_seasons"].toString().toStdString();
@@ -93,7 +95,7 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
                 usr2str = "Number of episodes: unknown";
             else usr2str = "Number of episodes: " + usr2str;
         }
-    }else { //actor info
+    } else { //actor info
         overview = infoitem["biography"].toString().toStdString();
 
     }
@@ -102,17 +104,17 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     sc::ColumnLayout layout1col(1), layout2col(2);
     // Single column layout
     if(!isActor)
-    layout1col.add_column( { "headerId", "videoId", "ratingId", "genresId", "reldateId",
+    layout1col.add_column( { "headerId", "videoId", "ratingId", "genresId", "reldateId", "expId",
                              "statusId", "runtimeId", "networksId", "usr1Id", "usr2Id",
                              "summaryId", "actionsId", "revtitleId", "reviewsId"});
-    else layout1col.add_column( {"headerId","imageId", "usr1Id", "galleryId","usr2Id", "summaryId"});
+    else layout1col.add_column( {"headerId","imageId", "galleryId", "summaryId"});
 
     // Two column layout
     if(!isActor){
-    layout2col.add_column( { "videoId", "ratingId", "genresId", "reldateId",
+    layout2col.add_column( { "videoId", "ratingId", "genresId", "reldateId", "expId",
                              "statusId", "runtimeId", "networksId", "usr1Id", "usr2Id"});
     layout2col.add_column( { "headerId", "summaryId", "actionsId", "revtitleId", "reviewsId" });
-    }else{layout2col.add_column( {"imageId", "usr1Id", "galleryId" }); layout2col.add_column( {"headerId", "usr2Id", "summaryId" });}
+    }else{layout2col.add_column( {"imageId", "galleryId" }); layout2col.add_column( {"headerId", "summaryId" });}
 
     // Register the layouts we just created
     reply->register_layout( { layout1col, layout2col });
@@ -122,6 +124,7 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     sc::PreviewWidget w_video("videoId", "video");
     sc::PreviewWidget w_image("imageId", "image");
     sc::PreviewWidget w_gallery("galleryId", "gallery");
+    sc::PreviewWidget w_expandable("expId", "expandable");
     sc::PreviewWidget w_rat("ratingId", "reviews");
     sc::PreviewWidget w_genres("genresId", "text");
     sc::PreviewWidget w_reldate("reldateId", "text");
@@ -147,11 +150,12 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
         sc::VariantBuilder rev_builder;
         w_video.add_attribute_value("source", sc::Variant(ytsource));
         w_video.add_attribute_mapping("screenshot", "backdrop");
-        w_genres.add_attribute_value("title", sc::Variant("Info"));
         w_genres.add_attribute_value("text", sc::Variant("Genres: " + genres));
         rat_builder.add_tuple({{"rating", sc::Variant(floor(infoitem["vote_average"].toFloat()+0.5)/2)}});
         w_rat.add_attribute_value("reviews", rat_builder.end());
         w_status.add_attribute_value("text", sc::Variant("Status: "+infoitem["status"].toString().toStdString()));
+        w_expandable.add_attribute_value("title", sc::Variant("Info"));
+        w_expandable.add_attribute_value("collapsed-widgets", sc::Variant(2));
         w_networks.add_attribute_value("text", sc::Variant(networkstr));
         w_usr1.add_attribute_value("text", sc::Variant(usr1str));
         w_usr2.add_attribute_value("text", sc::Variant(usr2str));
@@ -173,6 +177,14 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
             w_runtime.add_attribute_value("text", sc::Variant("In production: "+ in_production));
 
         }
+        w_expandable.add_widget(w_genres);
+        w_expandable.add_widget(w_status);
+        w_expandable.add_widget(w_reldate);
+        w_expandable.add_widget(w_runtime);
+        w_expandable.add_widget(w_networks);
+        w_expandable.add_widget(w_usr1);
+        w_expandable.add_widget(w_usr2);
+
 //actor specific sections
     }else if(isActor){
         w_image.add_attribute_mapping("source", "art");
@@ -183,28 +195,35 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
             if(!tmp.empty())
                 imgarr.push_back(sc::Variant("http://image.tmdb.org/t/p/w300" + tmp));
         }
-        w_usr1.add_attribute_value("title", sc::Variant("Acted in these movies"));
         w_gallery.add_attribute_value("sources", sc::Variant(imgarr));
-        w_usr2.add_attribute_value("title", sc::Variant("Biography"));
+        w_summary.add_attribute_value("title", sc::Variant("Biography"));
     }
 
 
     // Define the actions section
+    std::string homestr = infoitem["homepage"].toString().toStdString();
     sc::VariantBuilder act_builder;
-    act_builder.add_tuple({
-        {"id", sc::Variant("oncinema")},
-        {"label", sc::Variant("Find cinema")},
-        {"uri", result["uri"]}
-    });
-    act_builder.add_tuple({
-        {"id", sc::Variant("homepg")},
-        {"label", sc::Variant("Homepage")},
-        {"uri", sc::Variant(infoitem["homepage"].toString().toStdString())}
-    });
+    if(isMovie)
+        act_builder.add_tuple({
+            {"id", sc::Variant("oncinema")},
+            {"label", sc::Variant("Find cinema")},
+            {"uri", result["uri"]}
+        });
+    if(homestr != "")
+        act_builder.add_tuple({
+            {"id", sc::Variant("homepg")},
+            {"label", sc::Variant("Homepage")},
+            {"uri", sc::Variant(homestr)}
+        });
+        std::string tmptitle = result["title"].get_string();
+        act_builder.add_tuple({
+            {"id", sc::Variant("googleit")},
+            {"label", sc::Variant("Google it!")},
+            {"uri", sc::Variant("https://www.google.it/?q="+tmptitle+"#q="+tmptitle)}
+        });
     w_actions.add_attribute_value("actions", act_builder.end());
 
     // Push each of the sections
-    reply->push( { w_video, w_image, w_rat, w_genres, w_reldate, w_status, w_runtime,
-                   w_networks, w_usr1, w_gallery, w_usr2,
+    reply->push( { w_video, w_image, w_rat, w_expandable,  w_gallery,
                    w_header, w_summary, w_actions, w_revtitle, w_reviews });
 }
