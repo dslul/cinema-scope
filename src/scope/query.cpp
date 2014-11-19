@@ -211,7 +211,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
 
             for (const auto &flm : filmslist.films) {
                 sc::CategorisedResult res(films_cat);
-                res.set_uri("http://www.google.com/movies?near=" + place + "&q=" + flm.title);
+                res.set_uri("http://www.google.com/movies?near=" + place + "&q=" + flm.title + "&view=map");
                 res.set_title(flm.title);
                 // Set the rest of the attributes, art, artist, etc.
                 res.set_art(flm.poster_path);
