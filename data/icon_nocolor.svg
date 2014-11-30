@@ -12,7 +12,7 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="icon.svg">
+   sodipodi:docname="icon_nocolor.svg">
   <metadata
      id="metadata1572">
     <rdf:RDF>
@@ -39,17 +39,13 @@
      inkscape:window-height="744"
      id="namedview1568"
      showgrid="false"
-     inkscape:zoom="1.84375"
-     inkscape:cx="118.85425"
-     inkscape:cy="118.94731"
+     inkscape:zoom="10.429825"
+     inkscape:cx="101.4962"
+     inkscape:cy="175.48371"
      inkscape:window-x="65"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg2" />
-  <path
-     style="fill:#8786d7; stroke:none;"
-     d="M0 0L0 256L256 256L256 0L0 0z"
-     id="path4" />
   <path
      style="fill:#7c7cb7; stroke:none;"
      d="M155 41L156 42L155 41z"
@@ -183,7 +179,7 @@
      d="M154 46L155 47L154 46z"
      id="path70" />
   <path
-     style="fill:#8786d7; stroke:none;"
+     style="fill:#ffffff;stroke:none"
      d="M138 71C150.2 64.5053 155.886 60.0918 157 46C143.95 50.939 139.715 57.7216 138 71z"
      id="path72" />
   <path
@@ -723,7 +719,7 @@
      d="M124 65L125 66L124 65z"
      id="path340" />
   <path
-     style="fill:#8786d7; stroke:none;"
+     style="fill:#ffffff;stroke:none"
      d="M125 65C112.874 73.0237 109.618 76.0161 106 90C116.49 86.1593 128.018 77.7713 125 65z"
      id="path342" />
   <path
@@ -1467,7 +1463,7 @@
      d="M91 85L92 86L91 85z"
      id="path712" />
   <path
-     style="fill:#8786d7; stroke:none;"
+     style="fill:#ffffff;stroke:none"
      d="M92 85C81.3514 93.1251 75.1321 95.6753 74 110C84.5548 106.005 95.0261 97.6476 92 85z"
      id="path714" />
   <path
@@ -2523,7 +2519,7 @@
      d="M91 120L90 122L91 120z"
      id="path1252" />
   <path
-     style="fill:#8786d7; stroke:none;"
+     style="fill:#ffffff;stroke:none"
      d="M79 134C93.4403 134 101.075 132.671 110 120C95.5597 120 87.9254 121.329 79 134z"
      id="path1254" />
   <path
@@ -2535,7 +2531,7 @@
      d="M125 120L126 121L125 120z"
      id="path1258" />
   <path
-     style="fill:#8786d7; stroke:none;"
+     style="fill:#ffffff;stroke:none"
      d="M113 134C127.815 134 135.794 133.068 145 120C130.185 120 122.206 120.932 113 134z"
      id="path1260" />
   <path
@@ -2551,7 +2547,7 @@
      d="M160 120L161 121L160 120z"
      id="path1266" />
   <path
-     style="fill:#8786d7; stroke:none;"
+     style="fill:#ffffff;stroke:none"
      d="M148 134C162.984 134 169.97 133.205 179 120C164.56 120 156.925 121.329 148 134z"
      id="path1268" />
   <path
@@ -2987,7 +2983,7 @@
      d="M179 142L180 143L179 142z"
      id="path1500" />
   <path
-     style="fill:#8786d7; stroke:none;"
+     style="fill:#ffffff;stroke:none"
      d="M77 143L77 189L179 189L179 143L77 143z"
      id="path1504" />
   <path

@@ -115,8 +115,8 @@ void Query::run(sc::SearchReplyProxy const& reply) {
         sc::Filters filters;
         sc::OptionSelectorFilter::SPtr optionsFilter = sc::OptionSelectorFilter::create("category", s_homepage);
         optionsFilter->set_display_hints(1);
-        optionsFilter->add_option("movie", "Movies");
-        optionsFilter->add_option("tv", "TV-series");
+        optionsFilter->add_option("movie", _("Movies"));
+        optionsFilter->add_option("tv", _("TV-series"));
         optionsFilter->active_options(query.filter_state());
         filters.push_back(optionsFilter);
         reply->push(filters, query.filter_state());
@@ -134,76 +134,85 @@ void Query::run(sc::SearchReplyProxy const& reply) {
         //departments definition (done by hand for performance reasons)
         sc::Department::SPtr all_depts = sc::Department::create("", query, "All genres");
         if(filterid == "movie"){
-            sc::Department::SPtr dept1 = sc::Department::create("28", query, "Action"); all_depts->add_subdepartment(dept1);
-            sc::Department::SPtr dept2 = sc::Department::create("12", query, "Adventure"); all_depts->add_subdepartment(dept2);
-            sc::Department::SPtr dept3 = sc::Department::create("16", query, "Animation"); all_depts->add_subdepartment(dept3);
-            sc::Department::SPtr dept4 = sc::Department::create("35", query, "Comedy"); all_depts->add_subdepartment(dept4);
-            sc::Department::SPtr dept5 = sc::Department::create("80", query, "Crime"); all_depts->add_subdepartment(dept5);
-            sc::Department::SPtr dept6 = sc::Department::create("105", query, "Disaster"); all_depts->add_subdepartment(dept6);
-            sc::Department::SPtr dept7 = sc::Department::create("99", query, "Documentary"); all_depts->add_subdepartment(dept7);
-            sc::Department::SPtr dept8 = sc::Department::create("18", query, "Drama"); all_depts->add_subdepartment(dept8);
-            sc::Department::SPtr dept9 = sc::Department::create("82", query, "Eastern"); all_depts->add_subdepartment(dept9);
-            sc::Department::SPtr dept10 = sc::Department::create("2916", query, "Erotic"); all_depts->add_subdepartment(dept10);
-            sc::Department::SPtr dept11 = sc::Department::create("10751", query, "Family"); all_depts->add_subdepartment(dept11);
-            sc::Department::SPtr dept12 = sc::Department::create("10750", query, "Fan Film"); all_depts->add_subdepartment(dept12);
-            sc::Department::SPtr dept13 = sc::Department::create("14", query, "Fantasy"); all_depts->add_subdepartment(dept13);
-            sc::Department::SPtr dept14 = sc::Department::create("10753", query, "Film Noir"); all_depts->add_subdepartment(dept14);
-            sc::Department::SPtr dept15 = sc::Department::create("10769", query, "Foreign"); all_depts->add_subdepartment(dept15);
-            sc::Department::SPtr dept16 = sc::Department::create("36", query, "History"); all_depts->add_subdepartment(dept16);
-            sc::Department::SPtr dept17 = sc::Department::create("10595", query, "Holiday"); all_depts->add_subdepartment(dept17);
-            sc::Department::SPtr dept18 = sc::Department::create("27", query, "Horror"); all_depts->add_subdepartment(dept18);
-            sc::Department::SPtr dept19 = sc::Department::create("10756", query, "Indie"); all_depts->add_subdepartment(dept19);
-            sc::Department::SPtr dept20 = sc::Department::create("10402", query, "Music"); all_depts->add_subdepartment(dept20);
-            sc::Department::SPtr dept21 = sc::Department::create("22", query, "Musical"); all_depts->add_subdepartment(dept21);
-            sc::Department::SPtr dept22 = sc::Department::create("9648", query, "Mystery"); all_depts->add_subdepartment(dept22);
-            sc::Department::SPtr dept23 = sc::Department::create("10754", query, "Neo-Noir"); all_depts->add_subdepartment(dept23);
-            sc::Department::SPtr dept24 = sc::Department::create("1115", query, "Road Movie"); all_depts->add_subdepartment(dept24);
-            sc::Department::SPtr dept25 = sc::Department::create("10749", query, "Romance"); all_depts->add_subdepartment(dept25);
-            sc::Department::SPtr dept26 = sc::Department::create("878", query, "Science Fiction"); all_depts->add_subdepartment(dept26);
-            sc::Department::SPtr dept27 = sc::Department::create("10755", query, "Short"); all_depts->add_subdepartment(dept27);
-            sc::Department::SPtr dept28 = sc::Department::create("10758", query, "Sporting Event"); all_depts->add_subdepartment(dept28);
-            sc::Department::SPtr dept29 = sc::Department::create("10757", query, "Sports Film"); all_depts->add_subdepartment(dept29);
-            sc::Department::SPtr dept30 = sc::Department::create("10748", query, "Suspense"); all_depts->add_subdepartment(dept30);
-            sc::Department::SPtr dept31 = sc::Department::create("10770", query, "TV Movie"); all_depts->add_subdepartment(dept31);
-            sc::Department::SPtr dept32 = sc::Department::create("53", query, "Thriller"); all_depts->add_subdepartment(dept32);
-            sc::Department::SPtr dept33 = sc::Department::create("10752", query, "War"); all_depts->add_subdepartment(dept33);
-            sc::Department::SPtr dept34 = sc::Department::create("37", query, "Western"); all_depts->add_subdepartment(dept34);
+            sc::Department::SPtr dept1 = sc::Department::create("28", query, _("Action")); all_depts->add_subdepartment(dept1);
+            sc::Department::SPtr dept2 = sc::Department::create("12", query, _("Adventure")); all_depts->add_subdepartment(dept2);
+            sc::Department::SPtr dept3 = sc::Department::create("16", query, _("Animation")); all_depts->add_subdepartment(dept3);
+            sc::Department::SPtr dept4 = sc::Department::create("35", query, _("Comedy")); all_depts->add_subdepartment(dept4);
+            sc::Department::SPtr dept5 = sc::Department::create("80", query, _("Crime")); all_depts->add_subdepartment(dept5);
+            sc::Department::SPtr dept6 = sc::Department::create("105", query, _("Disaster")); all_depts->add_subdepartment(dept6);
+            sc::Department::SPtr dept7 = sc::Department::create("99", query, _("Documentary")); all_depts->add_subdepartment(dept7);
+            sc::Department::SPtr dept8 = sc::Department::create("18", query, _("Drama")); all_depts->add_subdepartment(dept8);
+            sc::Department::SPtr dept9 = sc::Department::create("82", query, _("Eastern")); all_depts->add_subdepartment(dept9);
+            sc::Department::SPtr dept10 = sc::Department::create("2916", query, _("Erotic")); all_depts->add_subdepartment(dept10);
+            sc::Department::SPtr dept11 = sc::Department::create("10751", query, _("Family")); all_depts->add_subdepartment(dept11);
+            sc::Department::SPtr dept12 = sc::Department::create("10750", query, _("Fan Film")); all_depts->add_subdepartment(dept12);
+            sc::Department::SPtr dept13 = sc::Department::create("14", query, _("Fantasy")); all_depts->add_subdepartment(dept13);
+            sc::Department::SPtr dept14 = sc::Department::create("10753", query, _("Film Noir")); all_depts->add_subdepartment(dept14);
+            sc::Department::SPtr dept15 = sc::Department::create("10769", query, _("Foreign")); all_depts->add_subdepartment(dept15);
+            sc::Department::SPtr dept16 = sc::Department::create("36", query, _("History")); all_depts->add_subdepartment(dept16);
+            sc::Department::SPtr dept17 = sc::Department::create("10595", query, _("Holiday")); all_depts->add_subdepartment(dept17);
+            sc::Department::SPtr dept18 = sc::Department::create("27", query, _("Horror")); all_depts->add_subdepartment(dept18);
+            sc::Department::SPtr dept19 = sc::Department::create("10756", query, _("Indie")); all_depts->add_subdepartment(dept19);
+            sc::Department::SPtr dept20 = sc::Department::create("10402", query, _("Music")); all_depts->add_subdepartment(dept20);
+            sc::Department::SPtr dept21 = sc::Department::create("22", query, _("Musical")); all_depts->add_subdepartment(dept21);
+            sc::Department::SPtr dept22 = sc::Department::create("9648", query, _("Mystery")); all_depts->add_subdepartment(dept22);
+            sc::Department::SPtr dept23 = sc::Department::create("10754", query, _("Neo-Noir")); all_depts->add_subdepartment(dept23);
+            sc::Department::SPtr dept24 = sc::Department::create("1115", query, _("Road Movie")); all_depts->add_subdepartment(dept24);
+            sc::Department::SPtr dept25 = sc::Department::create("10749", query, _("Romance")); all_depts->add_subdepartment(dept25);
+            sc::Department::SPtr dept26 = sc::Department::create("878", query, _("Science Fiction")); all_depts->add_subdepartment(dept26);
+            sc::Department::SPtr dept27 = sc::Department::create("10755", query, _("Short")); all_depts->add_subdepartment(dept27);
+            sc::Department::SPtr dept28 = sc::Department::create("10758", query, _("Sporting Event")); all_depts->add_subdepartment(dept28);
+            sc::Department::SPtr dept29 = sc::Department::create("10757", query, _("Sports Film")); all_depts->add_subdepartment(dept29);
+            sc::Department::SPtr dept30 = sc::Department::create("10748", query, _("Suspense")); all_depts->add_subdepartment(dept30);
+            sc::Department::SPtr dept31 = sc::Department::create("10770", query, _("TV Movie")); all_depts->add_subdepartment(dept31);
+            sc::Department::SPtr dept32 = sc::Department::create("53", query, _("Thriller")); all_depts->add_subdepartment(dept32);
+            sc::Department::SPtr dept33 = sc::Department::create("10752", query, _("War")); all_depts->add_subdepartment(dept33);
+            sc::Department::SPtr dept34 = sc::Department::create("37", query, _("Western")); all_depts->add_subdepartment(dept34);
             reply->register_departments(all_depts);
         }else{
-            sc::Department::SPtr dept1 = sc::Department::create("10759", query, "Action & Adventure"); all_depts->add_subdepartment(dept1);
-            sc::Department::SPtr dept2 = sc::Department::create("16", query, "Animation"); all_depts->add_subdepartment(dept2);
-            sc::Department::SPtr dept3 = sc::Department::create("35", query, "Comedy"); all_depts->add_subdepartment(dept3);
-            sc::Department::SPtr dept4 = sc::Department::create("99", query, "Documentary"); all_depts->add_subdepartment(dept4);
-            sc::Department::SPtr dept5 = sc::Department::create("18", query, "Drama"); all_depts->add_subdepartment(dept5);
-            sc::Department::SPtr dept6 = sc::Department::create("10761", query, "Education"); all_depts->add_subdepartment(dept6);
-            sc::Department::SPtr dept9 = sc::Department::create("10751", query, "Family"); all_depts->add_subdepartment(dept9);
-            sc::Department::SPtr dept10 = sc::Department::create("10762", query, "Kids"); all_depts->add_subdepartment(dept10);
-            sc::Department::SPtr dept11 = sc::Department::create("9648", query, "Mystery"); all_depts->add_subdepartment(dept11);
-            sc::Department::SPtr dept12 = sc::Department::create("10763", query, "News"); all_depts->add_subdepartment(dept12);
-            sc::Department::SPtr dept13 = sc::Department::create("10764", query, "Reality"); all_depts->add_subdepartment(dept13);
-            sc::Department::SPtr dept14 = sc::Department::create("10765", query, "Sci-Fi & Fantasy"); all_depts->add_subdepartment(dept14);
-            sc::Department::SPtr dept15 = sc::Department::create("10766", query, "Soap"); all_depts->add_subdepartment(dept15);
-            sc::Department::SPtr dept16 = sc::Department::create("10767", query, "Talk"); all_depts->add_subdepartment(dept16);
-            sc::Department::SPtr dept17 = sc::Department::create("10768", query, "War & Politics"); all_depts->add_subdepartment(dept17);
-            sc::Department::SPtr dept18 = sc::Department::create("37", query, "Western"); all_depts->add_subdepartment(dept18);
+            sc::Department::SPtr dept1 = sc::Department::create("10759", query, _("Action & Adventure")); all_depts->add_subdepartment(dept1);
+            sc::Department::SPtr dept2 = sc::Department::create("16", query, _("Animation")); all_depts->add_subdepartment(dept2);
+            sc::Department::SPtr dept3 = sc::Department::create("35", query, _("Comedy")); all_depts->add_subdepartment(dept3);
+            sc::Department::SPtr dept4 = sc::Department::create("99", query, _("Documentary")); all_depts->add_subdepartment(dept4);
+            sc::Department::SPtr dept5 = sc::Department::create("18", query, _("Drama")); all_depts->add_subdepartment(dept5);
+            sc::Department::SPtr dept6 = sc::Department::create("10761", query, _("Education")); all_depts->add_subdepartment(dept6);
+            sc::Department::SPtr dept9 = sc::Department::create("10751", query, _("Family")); all_depts->add_subdepartment(dept9);
+            sc::Department::SPtr dept10 = sc::Department::create("10762", query, _("Kids")); all_depts->add_subdepartment(dept10);
+            sc::Department::SPtr dept11 = sc::Department::create("9648", query, _("Mystery")); all_depts->add_subdepartment(dept11);
+            sc::Department::SPtr dept12 = sc::Department::create("10763", query, _("News")); all_depts->add_subdepartment(dept12);
+            sc::Department::SPtr dept13 = sc::Department::create("10764", query, _("Reality")); all_depts->add_subdepartment(dept13);
+            sc::Department::SPtr dept14 = sc::Department::create("10765", query, _("Sci-Fi & Fantasy")); all_depts->add_subdepartment(dept14);
+            sc::Department::SPtr dept15 = sc::Department::create("10766", query, _("Soap")); all_depts->add_subdepartment(dept15);
+            sc::Department::SPtr dept16 = sc::Department::create("10767", query, _("Talk")); all_depts->add_subdepartment(dept16);
+            sc::Department::SPtr dept17 = sc::Department::create("10768", query, _("War & Politics")); all_depts->add_subdepartment(dept17);
+            sc::Department::SPtr dept18 = sc::Department::create("37", query, _("Western")); all_depts->add_subdepartment(dept18);
             reply->register_departments(all_depts);
         }
 
         bool query_isempty = query_string.empty();
         if (query_isempty) {    // If the string is empty show default
-            std::string strquery, strcatname;
-            if(filterid=="movie"){
+            std::string depid = query.department_id(), strquery, strcatname, pagenum = "1";
+            int firstcat_id = 1, secondcat_id = 2;
+            if(filterid=="movie" && depid == ""){
                 strquery = "upcoming";
-                strcatname = "Coming soon";
-            } else {
+                strcatname = _("Coming soon");
+            } else if(filterid=="tv" && depid == ""){
                 strquery = "airing_today";
-                strcatname = "Airing today on TV";
+                strcatname = _("Airing today on TV");
+            } else if(filterid=="movie" && depid != ""){
+                strcatname = _("Popular movies");
+                secondcat_id = 1;
+                pagenum = "2";
+            } else if(filterid=="tv" && depid != ""){
+                strcatname = _("Popular TV shows");
+                secondcat_id = 1;
+                pagenum = "2";
             }
 
-            filmslist = client_.query_films(filterid, strquery, 1, query.department_id(), s_language);
-            filmslist2 = client_.query_films(filterid, strquery,  2, query.department_id(), s_language);
+            filmslist = client_.query_films(filterid, strquery, firstcat_id, depid, "1", s_language);
+            filmslist2 = client_.query_films(filterid, strquery, secondcat_id, depid, pagenum, s_language);
 
-            auto films_cat = reply->register_category("topvoted", "Featured", "",
+            auto films_cat = reply->register_category("topvoted", _("Featured"), "",
                 sc::CategoryRenderer(POPULARFILMS_TEMPLATE));
             auto films_cat2 = reply->register_category("comingsoon", strcatname, "",
                 sc::CategoryRenderer(RECENTFILMS_TEMPLATE));
@@ -262,10 +271,9 @@ void Query::run(sc::SearchReplyProxy const& reply) {
             }
         } else {
             // otherwise, use the query string
-            cerr << query.department_id() << endl;
-            filmslist = client_.query_films("movie", query_string, 0, query.department_id(), s_language);
-            filmslist2 = client_.query_films("tv", query_string, 0, query.department_id(), s_language);
-            actorslist = client_.query_films("person", query_string, 0, query.department_id(), s_language);
+            filmslist = client_.query_films("movie", query_string, 0, "", "", s_language);
+            filmslist2 = client_.query_films("tv", query_string, 0, "", "", s_language);
+            actorslist = client_.query_films("person", query_string, 0, "", "", s_language);
             auto films_cat = reply->register_category("searchmovie", "Movies", "",
                 sc::CategoryRenderer(SEARCHFILM_TEMPLATE));
             auto films_cat2 = reply->register_category("searchtv", "TV series", "",

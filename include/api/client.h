@@ -55,7 +55,8 @@ class Client {
 
 
     virtual FilmRes query_films(const std::string &movie_or_tv, const std::string &query,
-                                int querytype, std::string department, std::string lang);
+                                int querytype, const std::string &department,
+                                const std::string &pagenum, const std::string &lang);
 
 
     /**

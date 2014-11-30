@@ -52,8 +52,9 @@ void Client::get(const net::Uri::Path &path, const net::Uri::QueryParameters &pa
     }
 }
 
-Client::FilmRes Client::query_films(const string &movie_or_tv, const string& query,
-                                    int querytype, string department, string lang) {
+Client::FilmRes Client::query_films(const string& movie_or_tv, const string& query,
+                                    int querytype, const string& department,
+                                    const string& pagenum, const string& lang) {
     QJsonDocument root;
 
     /** Build a URI and get the contents */
@@ -61,7 +62,7 @@ Client::FilmRes Client::query_films(const string &movie_or_tv, const string& que
         get( { "search", movie_or_tv}, {{"query", query}, {"api_key", config_->moviedb_key}, {"search_type", "ngram"}, {"language", lang}}, root, config_->moviedbroot);
         /** <root>/search/movie?query=<query>&api_key=<api_key>&language=it */
     }else if(querytype == 1){  //featured category
-        get( { "discover", movie_or_tv}, { { "api_key", config_->moviedb_key }, {"with_genres", department}, {"language", lang} }, root, config_->moviedbroot);
+        get( { "discover", movie_or_tv}, { { "api_key", config_->moviedb_key }, {"with_genres", department}, {"language", lang}, {"page", pagenum} }, root, config_->moviedbroot);
         /** <root>/discover/movie?api_key=<api-key> */
     }else if(querytype == 2){  //other categories
         get( {movie_or_tv, query}, {{ "api_key", config_->moviedb_key }, {"with_genres", department}, {"language", lang} }, root, config_->moviedbroot);
