@@ -8,6 +8,7 @@
 #include <unity/scopes/VariantBuilder.h>
 #include <unity/scopes/Variant.h>
 #include <QVariantMap>
+#include <QDateTime>
 
 #include <iostream>
 #include <cmath>
@@ -28,14 +29,15 @@ void Preview::cancelled() {
 
 void Preview::run(sc::PreviewReplyProxy const& reply) {    
     sc::Result result = PreviewQueryBase::result();
-
+    //TODO: move all this to client.cpp
 
     //additional film info
     QJsonDocument root;
     int j=0;
     std::string ytsource = "", movie_or_tv = result["movie_or_tv"].get_string(), append,
             runtime, genres, networkstr, caststr, director, in_production, usr1str, usr2str,
-            tagline, overview, imdburi;
+            tagline, overview, imdburi, release_date, airdate;
+    QDate filmdate, seriesdate;
     bool isMovie = (movie_or_tv == "movie") ? true : false;
     bool isActor = (movie_or_tv == "person") ? true : false;
     //movie and tv specific query strings
@@ -55,6 +57,7 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
         ytsource = "https://www.youtube.com/watch?v=" + traileritem[trail3].toString().toStdString();
     }
     if(!isActor){
+        //get tagline and overview
         tagline = infoitem["tagline"].toString().toStdString();
         overview = infoitem["overview"].toString().toStdString();
         //retrieve all the genres
@@ -85,7 +88,11 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
         }if(j==0) director = "Unknown";
         //calculate runtime and other specific things
         int hours, min;
-        if(isMovie){ //movie info
+        if(isMovie){ //movie info            
+            //adjust release date
+            QString Qrelease_date = infoitem["release_date"].toString();
+            filmdate = QDate::fromString(Qrelease_date, "yyyy-MM-dd");
+            release_date = filmdate.toString(Qt::SystemLocaleLongDate).toStdString();
             min = infoitem["runtime"].toInt();
             if(min == 0) runtime = "unknown";
             else {
@@ -101,7 +108,12 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
                 usr2str = "<b>Revenue:</b> unknown";
             else usr2str = "<b>Revenue:</b> " + usr2str;
             imdburi = "http://www.imdb.com/title/" + infoitem["imdb_id"].toString().toStdString();
-        } else { //tv show info
+        } else { //tv show info            
+            //adjust first air date
+            QString Qrelease_date = infoitem["first_air_date"].toString();
+            seriesdate = QDate::fromString(Qrelease_date, "yyyy-MM-dd");
+            airdate = seriesdate.toString(Qt::SystemLocaleLongDate).toStdString();
+
             in_production = (infoitem["in_production"].toString().toStdString() == "true") ? "✔" : "no";
             //other
             usr1str = infoitem["number_of_seasons"].toString().toStdString();
@@ -113,11 +125,11 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
                 usr2str = "<b>Number of episodes:</b> unknown";
             else usr2str = "<b>Number of episodes:</b> " + usr2str;
         }
+
     } else { //actor info
         overview = infoitem["biography"].toString().toStdString();        
         imdburi = "http://www.imdb.com/name/" + infoitem["imdb_id"].toString().toStdString();
     }
-
 
     sc::ColumnLayout layout1col(1), layout2col(2);
     // Single column layout
@@ -162,7 +174,10 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
 
 //general sections
     w_header.add_attribute_mapping("title", "title");
-    w_summary.add_attribute_value("title", sc::Variant("<i>"+tagline+"</i>"));
+    if(tagline.empty())
+        w_summary.add_attribute_value("title", sc::Variant("Summary"));
+    else
+        w_summary.add_attribute_value("title", sc::Variant("<i>"+tagline+"</i>"));
     w_summary.add_attribute_value("text", sc::Variant(overview));
 
 
@@ -185,7 +200,7 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
         w_usr2.add_attribute_value("text", sc::Variant(usr2str));
 //movie specific sections
         if(isMovie){
-            w_reldate.add_attribute_value("text", sc::Variant("<b>Release date:</b> "+infoitem["release_date"].toString().toStdString()));
+            w_reldate.add_attribute_value("text", sc::Variant("<b>Release date:</b> "+release_date));
             w_runtime.add_attribute_value("text", sc::Variant("<b>Runtime:</b> "+ runtime));
             w_revtitle.add_attribute_value("title", sc::Variant("<b>Reviews</b>"));
             QVariantMap item, inforeviews = infoitem["reviews"].toMap();
@@ -197,7 +212,7 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
             else w_revtitle.add_attribute_value("text", sc::Variant(_("No reviews avaiable.")));
 //tv show specific sections
         } else {
-            w_reldate.add_attribute_value("text", sc::Variant("<b>First air date</b>: "+infoitem["first_air_date"].toString().toStdString()));
+            w_reldate.add_attribute_value("text", sc::Variant("<b>First air date</b>: "+airdate));
             w_runtime.add_attribute_value("text", sc::Variant("<b>In production</b>: "+ in_production));
 
         }
@@ -229,7 +244,7 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     // Define the actions section
     std::string homestr = infoitem["homepage"].toString().toStdString();
     sc::VariantBuilder act_builder;
-    if(isMovie)
+    if(isMovie && (QDate::currentDate() > filmdate && QDate::currentDate().year()-filmdate.year()<=1))
         act_builder.add_tuple({
             {"id", sc::Variant("oncinema")},
             {"label", sc::Variant(_("Find cinema"))},
@@ -247,7 +262,7 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
         {"label", sc::Variant(_("Google it!"))},
         {"uri", sc::Variant("https://www.google.it/?q="+tmptitle+"#q="+tmptitle)}
     });
-    if(imdburi != "")
+    if(imdburi != "" && imdburi != "http://www.imdb.com/title/" && imdburi != "http://www.imdb.com/name/")
         act_builder.add_tuple({
             {"id", sc::Variant("imdb")},
             {"label", sc::Variant("IMDb")},

@@ -90,7 +90,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
     initScope();
     try {
         // Start by getting information about the query
-        const sc::CannedQuery &query(sc::SearchQueryBase::query());
+        sc::CannedQuery query(sc::SearchQueryBase::query());
         //remove whitespaces
         string query_string = alg::trim_copy(query.query_string());
 
@@ -130,7 +130,6 @@ void Query::run(sc::SearchReplyProxy const& reply) {
         //set filter according to settings
         if(filterid == "" && s_homepage == "Movies") filterid = "movie";
         else if(filterid == "" && s_homepage == "TV-series") filterid = "tv";
-
         //departments definition (done by hand for performance reasons)
         sc::Department::SPtr all_depts = sc::Department::create("", query, "All genres");
         if(filterid == "movie"){

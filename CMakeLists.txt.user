@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 3.1.1, 2014-11-30T18:51:12. -->
+<!-- Written by QtCreator 3.1.1, 2014-12-03T20:09:07. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -374,23 +374,28 @@
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">UbuntuProjectManager.UploadStep</value>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedFiles">
-       <value type="QString">/home/daniele/Sviluppo/build-cinema-scope-emy_GCC_i386_ubuntu_sdk_14_10_utopic-Default/com.ubuntu.developer.dslul.cinema-scope_0.1_i386.click</value>
+       <value type="QString">/home/daniele/Sviluppo/build-cinema-scope-emy_GCC_i386_ubuntu_sdk_14_10_utopic-Default/com.ubuntu.developer.dslul.cinema-scope_0.2_i386.click</value>
        <value type="QString">/usr/share/qtcreator/ubuntu/scripts/qtc_device_applaunch.py</value>
+       <value type="QString">/home/daniele/Sviluppo/build-cinema-scope-emy_GCC_i386_ubuntu_sdk_14_10_utopic-Default/com.ubuntu.developer.dslul.cinema-scope_0.1_i386.click</value>
       </valuelist>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedHosts">
+       <value type="QString">127.0.0.1</value>
        <value type="QString">127.0.0.1</value>
        <value type="QString">127.0.0.1</value>
       </valuelist>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedRemotePaths">
        <value type="QString">/tmp</value>
        <value type="QString">/tmp</value>
+       <value type="QString">/tmp</value>
       </valuelist>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedSysroots">
        <value type="QString">/var/lib/schroot/chroots/click-ubuntu-sdk-14.10-i386</value>
        <value type="QString">/var/lib/schroot/chroots/click-ubuntu-sdk-14.10-i386</value>
+       <value type="QString">/var/lib/schroot/chroots/click-ubuntu-sdk-14.10-i386</value>
       </valuelist>
       <valuelist type="QVariantList" key="Qt4ProjectManager.MaemoRunConfiguration.LastDeployedTimes">
-       <value type="QDateTime">2014-11-30T11:39:10</value>
+       <value type="QDateTime">2014-12-03T10:18:34</value>
+       <value type="QDateTime">2014-12-03T10:18:34</value>
        <value type="QDateTime">2014-11-30T11:39:10</value>
       </valuelist>
      </valuemap>
