@@ -85,7 +85,7 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
                 break;
             }
             j++;
-        }if(j==0) director = "Unknown";
+        }if(director == "") director = "Unknown";
         //calculate runtime and other specific things
         int hours, min;
         if(isMovie){ //movie info            
