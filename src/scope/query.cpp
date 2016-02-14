@@ -36,12 +36,14 @@ const static string POPULARFILMS_TEMPLATE =
                 "category-layout": "carousel",
                 "card-layout": "vertical",
                 "card-size": "large",
-                "overlay": true
+                "overlay": false
             },
             "components": {
                 "title": "title",
                 "art" : {
-                    "field": "art"
+                    "field": "art",
+        "aspect-ratio": ".65"
+
                 },
                 "subtitle": "ratings"
             }
@@ -61,7 +63,9 @@ const static string RECENTFILMS_TEMPLATE =
             "components": {
                 "title": "title",
                 "art" : {
-                    "field": "art"
+                    "field": "art",
+        "aspect-ratio": ".65"
+
                 },
                 "subtitle": "ratings"
             }
@@ -79,7 +83,9 @@ const static string SEARCHFILM_TEMPLATE =
             "components": {
                 "title": "title",
                 "art" : {
-                    "field": "art"
+                    "field": "art",
+        "aspect-ratio": ".65"
+
                 },
                 "subtitle": "ratings"
             }
