@@ -1,5 +1,5 @@
-#include <scope/preview.h>
-#include <scope/localization.h>
+#include <preview.h>
+#include <localization.h>
 
 #include <unity/scopes/ColumnLayout.h>
 #include <unity/scopes/PreviewWidget.h>
@@ -9,6 +9,7 @@
 #include <unity/scopes/Variant.h>
 #include <QVariantMap>
 #include <QDateTime>
+#include <qjsondocument.h>
 
 #include <iostream>
 #include <cmath>
@@ -16,8 +17,6 @@
 namespace sc = unity::scopes;
 
 using namespace std;
-using namespace api;
-using namespace scope;
 
 Preview::Preview(const sc::Result &result, const sc::ActionMetadata &metadata,
                  Config::Ptr config) :
@@ -27,9 +26,10 @@ Preview::Preview(const sc::Result &result, const sc::ActionMetadata &metadata,
 void Preview::cancelled() {
 }
 
-void Preview::run(sc::PreviewReplyProxy const& reply) {    
+void Preview::run(sc::PreviewReplyProxy const& reply) {
     sc::Result result = PreviewQueryBase::result();
-    //TODO: move all this to client.cpp
+    //TODO: CLEAN UP ALL THIS MESS
+    //don't judge me I was young
 
     //additional film info
     QJsonDocument root;
@@ -134,19 +134,21 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     sc::ColumnLayout layout1col(1), layout2col(2);
     // Single column layout
     if(!isActor)
-    layout1col.add_column( { "headerId", "videoId", "ratingId", "genresId", "castId", "directorId",
-                             "reldateId", "expId",
-                             "statusId", "runtimeId", "networksId", "usr1Id", "usr2Id",
-                             "summaryId", "actionsId", "revtitleId", "reviewsId"});
-    else layout1col.add_column( {"headerId","imageId", "galleryId", "summaryId", "actionsId" });
+        layout1col.add_column( { "headerId", "videoId", "ratingId", "genresId", "castId", "directorId",
+                                 "reldateId", "expId",
+                                 "statusId", "runtimeId", "networksId", "usr1Id", "usr2Id",
+                                 "summaryId", "actionsId", "revtitleId", "reviewsId"});
+    else
+        layout1col.add_column( {"headerId","imageId", "galleryId", "summaryId", "actionsId" });
 
     // Two column layout
     if(!isActor){
-    layout2col.add_column( { "videoId", "ratingId", "genresId", "castId", "directorId", "reldateId",
-                             "expId",
-                             "statusId", "runtimeId", "networksId", "usr1Id", "usr2Id"});
-    layout2col.add_column( { "headerId", "summaryId", "actionsId", "revtitleId", "reviewsId" });
-    }else{layout2col.add_column( {"imageId", "galleryId"}); layout2col.add_column( {"headerId", "summaryId", "actionsId" });}
+        layout2col.add_column( { "videoId", "ratingId", "genresId", "castId", "directorId", "reldateId",
+                                 "expId",
+                                 "statusId", "runtimeId", "networksId", "usr1Id", "usr2Id"});
+        layout2col.add_column( { "headerId", "summaryId", "actionsId", "revtitleId", "reviewsId" });
+    } else {
+        layout2col.add_column( {"imageId", "galleryId"}); layout2col.add_column( {"headerId", "summaryId", "actionsId" });}
 
     // Register the layouts we just created
     reply->register_layout( { layout1col, layout2col });
@@ -175,14 +177,14 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
 //general sections
     w_header.add_attribute_mapping("title", "title");
     if(tagline.empty())
-        w_summary.add_attribute_value("title", sc::Variant("Summary"));
+        w_summary.add_attribute_value("title", sc::Variant("<b>Summary</b>"));
     else
         w_summary.add_attribute_value("title", sc::Variant("<i>"+tagline+"</i>"));
     w_summary.add_attribute_value("text", sc::Variant(overview));
 
 
-//movie and tv shows sections
-    if(isActor == false){
+    //MOVIES AND TV SHOWS sections
+    if(isActor == false) {
         sc::VariantBuilder rat_builder;
         sc::VariantBuilder rev_builder;
         w_video.add_attribute_value("source", sc::Variant(ytsource));
@@ -198,7 +200,7 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
         w_networks.add_attribute_value("text", sc::Variant(networkstr));
         w_usr1.add_attribute_value("text", sc::Variant(usr1str));
         w_usr2.add_attribute_value("text", sc::Variant(usr2str));
-//movie specific sections
+        //MOVIES specific sections
         if(isMovie){
             w_reldate.add_attribute_value("text", sc::Variant("<b>Release date:</b> "+release_date));
             w_runtime.add_attribute_value("text", sc::Variant("<b>Runtime:</b> "+ runtime));
@@ -210,7 +212,7 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
             }
             if(!item.isEmpty()) w_reviews.add_attribute_value("reviews", rev_builder.end());
             else w_revtitle.add_attribute_value("text", sc::Variant(_("No reviews avaiable.")));
-//tv show specific sections
+        //TV SHOWS specific sections
         } else {
             w_reldate.add_attribute_value("text", sc::Variant("<b>First air date</b>: "+airdate));
             w_runtime.add_attribute_value("text", sc::Variant("<b>In production</b>: "+ in_production));
@@ -226,13 +228,14 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
         w_expandable.add_widget(w_usr1);
         w_expandable.add_widget(w_usr2);
 
-//actor specific sections
-    }else if(isActor){
+    //actor specific sections
+    } else if(isActor) {
         w_image.add_attribute_mapping("source", "art");
         sc::VariantArray imgarr;
         QVariantMap item, inforeviews = infoitem["movie_credits"].toMap();
         for (const QVariant &i : inforeviews["cast"].toList()) {
-            item = i.toMap(); std::string tmp = item["poster_path"].toString().toStdString();
+            item = i.toMap();
+            std::string tmp = item["poster_path"].toString().toStdString();
             if(!tmp.empty())
                 imgarr.push_back(sc::Variant("http://image.tmdb.org/t/p/w154" + tmp));
         }
@@ -260,7 +263,7 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     act_builder.add_tuple({
         {"id", sc::Variant("googleit")},
         {"label", sc::Variant(_("Google it!"))},
-        {"uri", sc::Variant("https://www.google.it/?q="+tmptitle+"#q="+tmptitle)}
+        {"uri", sc::Variant("https://www.google.it/?q="+tmptitle)}
     });
     if(imdburi != "" && imdburi != "http://www.imdb.com/title/" && imdburi != "http://www.imdb.com/name/")
         act_builder.add_tuple({
@@ -271,6 +274,11 @@ void Preview::run(sc::PreviewReplyProxy const& reply) {
     w_actions.add_attribute_value("actions", act_builder.end());
 
     // Push each of the sections
-    reply->push( { w_video, w_image, w_rat, w_expandable,  w_gallery,
-                   w_header, w_summary, w_actions, w_revtitle, w_reviews });
+    if(isActor) {
+        reply->push( { w_header, w_image,  w_gallery,
+                   w_summary, w_actions });
+    } else {
+        reply->push( { w_header, w_video, w_rat, w_expandable,
+                   w_summary, w_actions, w_revtitle, w_reviews });
+    }
 }

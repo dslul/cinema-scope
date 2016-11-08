@@ -1,0 +1,10 @@
+src/scope.cpp
+src/client.cpp
+src/query.cpp
+src/preview.cpp
+src/preview.h
+src/query.h
+src/scope.h
+src/client.h
+src/config.h
+src/localization.h

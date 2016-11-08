@@ -1,0 +1,14 @@
+[ScopeConfig]
+DisplayName=Cinema
+Description=Find your favorite film or TV show
+Art=screenshot.png
+Author=Daniele Laudani
+Icon=icon.png
+LocationDataNeeded=true
+
+[Appearance]
+PageHeader.Logo=logo.png
+ForegroundColor=#252525
+PageHeader.Background=color:///#953d3dc6
+PageHeader.DividerColor=#252525
+

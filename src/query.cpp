@@ -1,7 +1,7 @@
-#include <boost/algorithm/string/trim.hpp>
+//#include <boost/algorithm/string/trim.hpp>
 
-#include <scope/localization.h>
-#include <scope/query.h>
+#include <localization.h>
+#include <query.h>
 
 #include <unity/scopes/Annotation.h>
 #include <unity/scopes/CategorisedResult.h>
@@ -17,14 +17,13 @@
 #include <unity/scopes/SearchMetadata.h>
 
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 
 namespace sc = unity::scopes;
-namespace alg = boost::algorithm;
+//namespace alg = boost::algorithm;
 
 using namespace std;
-using namespace api;
-using namespace scope;
 
 
 //http://developer.ubuntu.com/api/scopes/sdk-14.10/unity.scopes.CategoryRenderer/
@@ -98,7 +97,8 @@ void Query::run(sc::SearchReplyProxy const& reply) {
         // Start by getting information about the query
         sc::CannedQuery query(sc::SearchQueryBase::query());
         //remove whitespaces
-        string query_string = alg::trim_copy(query.query_string());
+        string query_string = query.query_string();
+        //string query_string = alg::trim_copy(query.query_string());
 
         Client::FilmRes filmslist, filmslist2, actorslist;
         //store location
@@ -213,7 +213,6 @@ void Query::run(sc::SearchReplyProxy const& reply) {
                 secondcat_id = 1;
                 pagenum = "2";
             }
-
             filmslist = client_.query_films(filterid, strquery, firstcat_id, depid, "1", s_language);
             filmslist2 = client_.query_films(filterid, strquery, secondcat_id, depid, pagenum, s_language);
 
@@ -285,7 +284,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
                 sc::CategoryRenderer(SEARCHFILM_TEMPLATE));
             auto actors_cat = reply->register_category("searchact", "Actors", "",
                 sc::CategoryRenderer(SEARCHFILM_TEMPLATE));
-            //print film list
+            //print searched film list
             for (const auto &flm : filmslist.films) {
                 sc::CategorisedResult res(films_cat);
                 res.set_uri("http://www.google.com/movies?near=" + place + "&q=" + flm.title);
@@ -306,7 +305,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
                 if (!reply->push(res))
                     return;
             }
-            //print tv shows list
+            //print searched tv shows list
             for (const auto &flm : filmslist2.films) {
                 sc::CategorisedResult res(films_cat2);
                 res.set_uri("google.com");
@@ -327,7 +326,7 @@ void Query::run(sc::SearchReplyProxy const& reply) {
                 if (!reply->push(res))
                     return;
             }
-            //print actors list
+            //print searched actors list
             for (const auto &act : actorslist.films) {
                 sc::CategorisedResult res(actors_cat);
                 res.set_uri("google.com");
@@ -341,7 +340,6 @@ void Query::run(sc::SearchReplyProxy const& reply) {
                     return;
             }
         }
-
     } catch (domain_error &e) {
         // Handle exceptions being thrown by the client API
         cerr << e.what() << endl;
@@ -365,13 +363,13 @@ void Query::initScope() //init settings
     if (config.empty())
         cerr << "CONFIG EMPTY!" << endl;
 
-    s_location = config["location"].get_string();
+    s_location = settings().at("location").get_string();
 
-    int home = config["homepage"].get_int();
+    int home = settings().at("homepage").get_int();
     s_homepage = (home==0) ? "Movies" : "TV-series";
 
-    int lang = config["language"].get_int();
-    if(lang == 0) s_language = "en";        //don't trust switch he's a bad guy
+    int lang = settings().at("language").get_int();
+    if(lang == 0) s_language = "en";
     else if(lang == 1) s_language = "it";
     else if(lang == 2) s_language = "de";
     else if(lang == 3) s_language = "fr";

@@ -1,15 +1,13 @@
-#ifndef SCOPE_SCOPE_H_
-#define SCOPE_SCOPE_H_
+#ifndef SCOPE_H_
+#define SCOPE_H_
 
-#include <api/config.h>
+#include <client.h>
 
 #include <unity/scopes/ScopeBase.h>
 #include <unity/scopes/QueryBase.h>
 #include <unity/scopes/ReplyProxyFwd.h>
 #include <unity/scopes/QueryBase.h>
 #include <unity/scopes/PreviewQueryBase.h>
-
-namespace scope {
 
 /**
  * Defines the lifecycle of scope plugin, and acts as a factory
@@ -21,30 +19,32 @@ namespace scope {
  */
 class Scope: public unity::scopes::ScopeBase {
 public:
-
-    //Called once at startup
+    /**
+     * Called once at startup
+     */
     void start(std::string const&) override;
 
-
-    //Called at shutdown
+    /**
+     * Called at shutdown
+     */
     void stop() override;
 
-
-    //Called each time a new preview is requested
+    /**
+     * Called each time a new preview is requested
+     */
     unity::scopes::PreviewQueryBase::UPtr preview(const unity::scopes::Result&,
                                                   const unity::scopes::ActionMetadata&) override;
 
-
-    //Called each time a new query is requested
+    /**
+     * Called each time a new query is requested
+     */
     unity::scopes::SearchQueryBase::UPtr search(
             unity::scopes::CannedQuery const& q,
             unity::scopes::SearchMetadata const&) override;
 
 protected:
-    api::Config::Ptr config_;
+    Config::Ptr config_;
 };
 
-}
-
-#endif // SCOPE_SCOPE_H_
+#endif // SCOPE_H_
 

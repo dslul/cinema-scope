@@ -1,7 +1,7 @@
-#ifndef SCOPE_PREVIEW_H_
-#define SCOPE_PREVIEW_H_
+#ifndef PREVIEW_H_
+#define PREVIEW_H_
 
-#include <api/client.h>
+#include <client.h>
 
 #include <unity/scopes/PreviewQueryBase.h>
 
@@ -10,8 +10,6 @@ namespace scopes {
 class Result;
 }
 }
-
-namespace scope {
 
 /**
  * Represents an individual preview request.
@@ -22,7 +20,7 @@ namespace scope {
 class Preview: public unity::scopes::PreviewQueryBase {
 public:
     Preview(const unity::scopes::Result &result,
-            const unity::scopes::ActionMetadata &metadata, api::Config::Ptr config);
+            const unity::scopes::ActionMetadata &metadata, Config::Ptr config);
 
     ~Preview() = default;
 
@@ -32,12 +30,10 @@ public:
      * Populates the reply object with preview information.
      */
     void run(unity::scopes::PreviewReplyProxy const& reply) override;
-
 private:
-    api::Client client_;
+    Client client_;
 };
 
-}
 
 #endif // SCOPE_PREVIEW_H_
 

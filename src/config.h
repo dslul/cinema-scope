@@ -1,10 +1,8 @@
-#ifndef API_CONFIG_H_
-#define API_CONFIG_H_
+#ifndef CONFIG_H_
+#define CONFIG_H_
 
 #include <memory>
 #include <string>
-
-namespace api {
 
 struct Config {
     typedef std::shared_ptr<Config> Ptr;
@@ -21,7 +19,5 @@ struct Config {
     std::string user_agent { "example-network-scope 0.1; (foo)" };
 };
 
-}
-
-#endif /* API_CONFIG_H_ */
+#endif /* CONFIG_H_ */
 

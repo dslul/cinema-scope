@@ -1,6 +1,6 @@
 [homepage]
  type = list
- defaultValue = 0
+ defaultValue = 1
  displayName = Homepage
  displayValues = Movies;TV-series
 

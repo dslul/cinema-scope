@@ -1,4 +1,4 @@
-#include <api/client.h>
+#include <client.h>
 
 #include <core/net/error.h>
 #include <core/net/http/client.h>
@@ -11,7 +11,6 @@
 namespace http = core::net::http;
 namespace net = core::net;
 
-using namespace api;
 using namespace std;
 
 Client::Client(Config::Ptr config) :

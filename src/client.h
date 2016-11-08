@@ -1,18 +1,21 @@
-#ifndef API_CLIENT_H_
-#define API_CLIENT_H_
+#ifndef CLIENT_H_
+#define CLIENT_H_
 
-#include <api/config.h>
+#include <config.h>
 
 #include <atomic>
 #include <deque>
 #include <map>
+#include <memory>
 #include <string>
 #include <core/net/http/request.h>
 #include <core/net/uri.h>
 
 #include <QJsonDocument>
 
-namespace api {
+namespace Json {
+    class Value;
+}
 
 /**
  * Provide a nice way to access the HTTP API.
@@ -87,6 +90,4 @@ class Client {
     std::atomic<bool> cancelled_;
 };
 
-}
-
-#endif // API_CLIENT_H_
+#endif // CLIENT_H_

@@ -1,15 +1,15 @@
 {
     "architecture": "@CLICK_ARCH@",
     "description": "Find information on your favourite movies and TV shows!",
-    "framework": "ubuntu-sdk-14.10-dev2",
+    "framework": "ubuntu-sdk-15.04.6",
     "hooks": {
         "cinema": {
             "apparmor": "cinema.apparmor",
             "scope": "cinema"
         }
     },
-    "maintainer": "Daniele <laudanidaniele@gmail.com>",
+    "maintainer": "Daniele Laudani <laudanidaniele@gmail.com>",
     "name": "com.ubuntu.developer.dslul.cinema-scope",
-    "title": "Cinema",
-    "version": "0.3"
+    "title": "cinema",
+    "version": "0.5"
 }
