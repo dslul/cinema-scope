@@ -17,8 +17,8 @@ class Result;
  * Each time a result is previewed in the UI a new Preview
  * object is created.
  */
-class Preview: public unity::scopes::PreviewQueryBase {
-public:
+class Preview : public unity::scopes::PreviewQueryBase {
+  public:
     Preview(const unity::scopes::Result &result,
             const unity::scopes::ActionMetadata &metadata, Config::Ptr config);
 
@@ -29,11 +29,10 @@ public:
     /**
      * Populates the reply object with preview information.
      */
-    void run(unity::scopes::PreviewReplyProxy const& reply) override;
-private:
+    void run(unity::scopes::PreviewReplyProxy const &reply) override;
+
+  private:
     Client client_;
 };
 
-
 #endif // SCOPE_PREVIEW_H_
-

@@ -8,8 +8,8 @@
             "scope": "cinema"
         }
     },
-    "maintainer": "Daniele Laudani <laudanidaniele@gmail.com>",
+    "maintainer": "Daniele Laudani <danielelaudani@protonmail.com>",
     "name": "com.ubuntu.developer.dslul.cinema-scope",
     "title": "cinema",
-    "version": "0.5"
+    "version": "0.6"
 }

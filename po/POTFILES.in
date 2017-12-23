@@ -1,10 +1,10 @@
+src/preview.cpp
+src/query.cpp
 src/scope.cpp
 src/client.cpp
-src/query.cpp
-src/preview.cpp
-src/preview.h
 src/query.h
-src/scope.h
-src/client.h
 src/config.h
+src/client.h
+src/scope.h
 src/localization.h
+src/preview.h

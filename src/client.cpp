@@ -13,11 +13,10 @@ namespace net = core::net;
 
 using namespace std;
 
-Client::Client(Config::Ptr config) :
-    config_(config), cancelled_(false) {
-}
+Client::Client(Config::Ptr config) : config_(config), cancelled_(false) {}
 
-void Client::get(const net::Uri::Path &path, const net::Uri::QueryParameters &parameters,
+void Client::get(const net::Uri::Path &path,
+                 const net::Uri::QueryParameters &parameters,
                  QJsonDocument &root, std::string &apiroot) {
     // Create a new HTTP client
     auto client = http::make_client();
@@ -39,7 +38,7 @@ void Client::get(const net::Uri::Path &path, const net::Uri::QueryParameters &pa
         // Synchronously make the HTTP request
         // We bind the cancellable callback to #progress_report
         auto response = request->execute(
-                    bind(&Client::progress_report, this, placeholders::_1));
+            bind(&Client::progress_report, this, placeholders::_1));
 
         // Check that we got a sensible HTTP status code
         if (response.status != http::Status::ok) {
@@ -51,20 +50,32 @@ void Client::get(const net::Uri::Path &path, const net::Uri::QueryParameters &pa
     }
 }
 
-Client::FilmRes Client::query_films(const string& movie_or_tv, const string& query,
-                                    int querytype, const string& department,
-                                    const string& pagenum, const string& lang) {
+Client::FilmRes Client::query_films(const string &movie_or_tv,
+                                    const string &query, int querytype,
+                                    const string &department,
+                                    const string &pagenum, const string &lang) {
     QJsonDocument root;
 
     /** Build a URI and get the contents */
-    if(querytype == 0){        //search
-        get( { "search", movie_or_tv}, {{"query", query}, {"api_key", config_->moviedb_key}, {"search_type", "ngram"}, {"language", lang}}, root, config_->moviedbroot);
+    if (querytype == 0) { // search
+        get({"search", movie_or_tv}, {{"query", query},
+                                      {"api_key", config_->moviedb_key},
+                                      {"search_type", "ngram"},
+                                      {"language", lang}},
+            root, config_->moviedbroot);
         /** <root>/search/movie?query=<query>&api_key=<api_key>&language=it */
-    }else if(querytype == 1){  //featured category
-        get( { "discover", movie_or_tv}, { { "api_key", config_->moviedb_key }, {"with_genres", department}, {"language", lang}, {"page", pagenum} }, root, config_->moviedbroot);
+    } else if (querytype == 1) { // featured category
+        get({"discover", movie_or_tv}, {{"api_key", config_->moviedb_key},
+                                        {"with_genres", department},
+                                        {"language", lang},
+                                        {"page", pagenum}},
+            root, config_->moviedbroot);
         /** <root>/discover/movie?api_key=<api-key> */
-    }else if(querytype == 2){  //other categories
-        get( {movie_or_tv, query}, {{ "api_key", config_->moviedb_key }, {"with_genres", department}, {"language", lang} }, root, config_->moviedbroot);
+    } else if (querytype == 2) { // other categories
+        get({movie_or_tv, query}, {{"api_key", config_->moviedb_key},
+                                   {"with_genres", department},
+                                   {"language", lang}},
+            root, config_->moviedbroot);
         /** <root>/movie/upcoming?api_key=<api_key> */
     }
 
@@ -74,55 +85,42 @@ Client::FilmRes Client::query_films(const string& movie_or_tv, const string& que
     for (const QVariant &i : variant["results"].toList()) {
         QVariantMap item = i.toMap();
         std::string posterimg, backdropimg;
-        if(movie_or_tv == "person")
+        if (movie_or_tv == "person")
             posterimg = item["profile_path"].toString().toStdString();
-        else{
+        else {
             posterimg = item["poster_path"].toString().toStdString();
             backdropimg = item["backdrop_path"].toString().toStdString();
         }
-        if(posterimg.empty())
-            posterimg = "http://www.atmos.washington.edu/~carey/images/notFound.png";
+        if (posterimg.empty())
+            posterimg =
+                "http://www.atmos.washington.edu/~carey/images/notFound.png";
         else
             posterimg = "http://image.tmdb.org/t/p/w300" + posterimg;
-        if(backdropimg.empty() && movie_or_tv != "person")
+        if (backdropimg.empty() && movie_or_tv != "person")
             backdropimg = posterimg;
         else
             backdropimg = "http://image.tmdb.org/t/p/w300" + backdropimg;
         // We add each result to our list
         std::string title = item["title"].toString().toStdString();
-        if(title == "")
+        if (title == "")
             title = item["name"].toString().toStdString();
 
         result.films.emplace_back(
-            Film {
-                backdropimg,
-                item["id"].toUInt(),
-                item["original_title"].toString().toStdString(),
-                item["release_date"].toString().toStdString(),
-                posterimg,
-                item["popularity"].toDouble(),
-                title,
-                item["vote_average"].toDouble(),
-                item["vote_count"].toUInt()
-            }
-        );
+            Film{backdropimg, item["id"].toUInt(),
+                 item["original_title"].toString().toStdString(),
+                 item["release_date"].toString().toStdString(), posterimg,
+                 item["popularity"].toDouble(), title,
+                 item["vote_average"].toDouble(), item["vote_count"].toUInt()});
     }
     return result;
 }
 
-
-http::Request::Progress::Next Client::progress_report(
-        const http::Request::Progress&) {
-
-    return cancelled_ ?
-                http::Request::Progress::Next::abort_operation :
-                http::Request::Progress::Next::continue_operation;
+http::Request::Progress::Next
+Client::progress_report(const http::Request::Progress &) {
+    return cancelled_ ? http::Request::Progress::Next::abort_operation
+                      : http::Request::Progress::Next::continue_operation;
 }
 
-void Client::cancel() {
-    cancelled_ = true;
-}
+void Client::cancel() { cancelled_ = true; }
 
-Config::Ptr Client::config() {
-    return config_;
-}
+Config::Ptr Client::config() { return config_; }

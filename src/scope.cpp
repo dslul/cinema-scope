@@ -10,12 +10,12 @@
 namespace sc = unity::scopes;
 using namespace std;
 
-void Scope::start(string const&) {
+void Scope::start(string const &) {
     config_ = make_shared<Config>();
 
     setlocale(LC_ALL, "");
-    string translation_directory = ScopeBase::scope_directory()
-            + "/../share/locale/";
+    string translation_directory =
+        ScopeBase::scope_directory() + "/../share/locale/";
     bindtextdomain(GETTEXT_PACKAGE, translation_directory.c_str());
 
     // Under test we set a different API root
@@ -25,8 +25,7 @@ void Scope::start(string const&) {
     }
 }
 
-void Scope::stop() {
-}
+void Scope::stop() {}
 
 sc::SearchQueryBase::UPtr Scope::search(const sc::CannedQuery &query,
                                         const sc::SearchMetadata &metadata) {
@@ -34,29 +33,28 @@ sc::SearchQueryBase::UPtr Scope::search(const sc::CannedQuery &query,
     return sc::SearchQueryBase::UPtr(new Query(query, metadata, config_));
 }
 
-sc::PreviewQueryBase::UPtr Scope::preview(sc::Result const& result,
-                                          sc::ActionMetadata const& metadata) {
+sc::PreviewQueryBase::UPtr Scope::preview(sc::Result const &result,
+                                          sc::ActionMetadata const &metadata) {
     // Boilerplate construction of Preview
     return sc::PreviewQueryBase::UPtr(new Preview(result, metadata, config_));
 }
 
-#define EXPORT __attribute__ ((visibility ("default")))
+#define EXPORT __attribute__((visibility("default")))
 
 // These functions define the entry points for the scope plugin
 extern "C" {
 
 EXPORT
-unity::scopes::ScopeBase*
-// cppcheck-suppress unusedFunction
-UNITY_SCOPE_CREATE_FUNCTION() {
+unity::scopes::ScopeBase *
+    // cppcheck-suppress unusedFunction
+    UNITY_SCOPE_CREATE_FUNCTION() {
     return new Scope();
 }
 
 EXPORT
 void
-// cppcheck-suppress unusedFunction
-UNITY_SCOPE_DESTROY_FUNCTION(unity::scopes::ScopeBase* scope_base) {
+    // cppcheck-suppress unusedFunction
+    UNITY_SCOPE_DESTROY_FUNCTION(unity::scopes::ScopeBase *scope_base) {
     delete scope_base;
 }
-
 }

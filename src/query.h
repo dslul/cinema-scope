@@ -13,10 +13,10 @@
  * given query information, metadata about the search, and
  * some scope-specific configuration.
  */
-class Query: public unity::scopes::SearchQueryBase {
-public:
+class Query : public unity::scopes::SearchQueryBase {
+  public:
     Query(const unity::scopes::CannedQuery &query,
-              const unity::scopes::SearchMetadata &metadata, Config::Ptr config);
+          const unity::scopes::SearchMetadata &metadata, Config::Ptr config);
 
     ~Query() = default;
 
@@ -24,15 +24,12 @@ public:
 
     void run(const unity::scopes::SearchReplyProxy &reply) override;
 
-private:
+  private:
     Client client_;
     void initScope();
     std::string s_location;
     std::string s_language;
     std::string s_homepage;
-
 };
 
 #endif // SCOPE_QUERY_H_
-
-

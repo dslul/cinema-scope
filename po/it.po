@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: cinema-scope\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-11-08 09:58+0000\n"
+"POT-Creation-Date: 2017-12-23 11:04+0000\n"
 "PO-Revision-Date: 2014-11-30 17:35+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -17,111 +17,111 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: ../src/query.cpp:142
+#: ../src/query.cpp:147
 msgid "Action"
 msgstr "Azione"
 
-#: ../src/query.cpp:178
+#: ../src/query.cpp:251
 msgid "Action & Adventure"
 msgstr "Azione e Avventura"
 
-#: ../src/query.cpp:143
+#: ../src/query.cpp:150
 msgid "Adventure"
 msgstr "Avventura"
 
-#: ../src/query.cpp:206
+#: ../src/query.cpp:311
 msgid "Airing today on TV"
 msgstr "In diretta oggi"
 
-#: ../src/query.cpp:144 ../src/query.cpp:179
+#: ../src/query.cpp:153 ../src/query.cpp:254
 msgid "Animation"
 msgstr "Animazione"
 
-#: ../src/query.cpp:145 ../src/query.cpp:180
+#: ../src/query.cpp:156 ../src/query.cpp:257
 msgid "Comedy"
 msgstr "Commedia"
 
-#: ../src/query.cpp:203
+#: ../src/query.cpp:308
 msgid "Coming soon"
 msgstr "Prossimamente"
 
-#: ../src/query.cpp:146
+#: ../src/query.cpp:159
 msgid "Crime"
 msgstr "Crimine"
 
-#: ../src/query.cpp:147
+#: ../src/query.cpp:162
 msgid "Disaster"
 msgstr "Disastro"
 
-#: ../src/query.cpp:148 ../src/query.cpp:181
+#: ../src/query.cpp:165 ../src/query.cpp:260
 msgid "Documentary"
 msgstr "Documentario"
 
-#: ../src/query.cpp:149 ../src/query.cpp:182
+#: ../src/query.cpp:168 ../src/query.cpp:263
 msgid "Drama"
 msgstr "Drammatico"
 
-#: ../src/query.cpp:150
+#: ../src/query.cpp:171
 msgid "Eastern"
 msgstr "Eastern"
 
-#: ../src/query.cpp:183
+#: ../src/query.cpp:266
 msgid "Education"
 msgstr "Istruzione"
 
-#: ../src/query.cpp:151
+#: ../src/query.cpp:174
 msgid "Erotic"
 msgstr "Erotico"
 
-#: ../src/query.cpp:152 ../src/query.cpp:184
+#: ../src/query.cpp:177 ../src/query.cpp:269
 msgid "Family"
 msgstr "Famiglia"
 
-#: ../src/query.cpp:153
+#: ../src/query.cpp:180
 msgid "Fan Film"
 msgstr "Fan Film"
 
-#: ../src/query.cpp:154
+#: ../src/query.cpp:183
 msgid "Fantasy"
 msgstr "Fantasy"
 
-#: ../src/query.cpp:219
+#: ../src/query.cpp:327
 msgid "Featured"
 msgstr "Consigliati"
 
-#: ../src/query.cpp:155
+#: ../src/query.cpp:186
 msgid "Film Noir"
 msgstr "Noir"
 
-#: ../src/preview.cpp:253
+#: ../src/preview.cpp:329
 msgid "Find cinema"
 msgstr "Trova cinema"
 
-#: ../src/query.cpp:156
+#: ../src/query.cpp:189
 msgid "Foreign"
 msgstr "Straniero"
 
-#: ../src/preview.cpp:265
+#: ../src/preview.cpp:338
 msgid "Google it!"
 msgstr "Cerca su Google"
 
-#: ../src/query.cpp:157
+#: ../src/query.cpp:192
 msgid "History"
 msgstr "Storia"
 
-#: ../src/query.cpp:158
+#: ../src/query.cpp:195
 msgid "Holiday"
 msgstr "Vacanza"
 
-#: ../src/query.cpp:159
+#: ../src/query.cpp:198
 msgid "Horror"
 msgstr "Horror"
 
-#: ../src/query.cpp:160
+#: ../src/query.cpp:201
 msgid "Indie"
 msgstr "Indie"
 
-#: ../src/query.cpp:185
+#: ../src/query.cpp:272
 msgid "Kids"
 msgstr "Bambini"
 
@@ -129,79 +129,79 @@ msgstr "Bambini"
 msgid "Movies"
 msgstr "Film"
 
-#: ../src/query.cpp:161
+#: ../src/query.cpp:204
 msgid "Music"
 msgstr "Musica"
 
-#: ../src/query.cpp:162
+#: ../src/query.cpp:207
 msgid "Musical"
 msgstr "Musical"
 
-#: ../src/query.cpp:163 ../src/query.cpp:186
+#: ../src/query.cpp:210 ../src/query.cpp:275
 msgid "Mystery"
 msgstr "Mistero"
 
-#: ../src/query.cpp:164
+#: ../src/query.cpp:213
 msgid "Neo-Noir"
 msgstr "Neo-Noir"
 
-#: ../src/query.cpp:187
+#: ../src/query.cpp:278
 msgid "News"
 msgstr "Notizie"
 
-#: ../src/preview.cpp:214
+#: ../src/preview.cpp:289
 msgid "No reviews avaiable."
 msgstr "Nessuna recensione disponibile."
 
-#: ../src/query.cpp:212
+#: ../src/query.cpp:317
 msgid "Popular TV shows"
 msgstr "Serie TV popolari"
 
-#: ../src/query.cpp:208
+#: ../src/query.cpp:313
 msgid "Popular movies"
 msgstr "Film popolari"
 
-#: ../src/query.cpp:188
+#: ../src/query.cpp:281
 msgid "Reality"
 msgstr "Reality"
 
-#: ../src/query.cpp:165
+#: ../src/query.cpp:216
 msgid "Road Movie"
 msgstr "Viaggio"
 
-#: ../src/query.cpp:166
+#: ../src/query.cpp:219
 msgid "Romance"
 msgstr "Romantico"
 
-#: ../src/query.cpp:189
+#: ../src/query.cpp:284
 msgid "Sci-Fi & Fantasy"
 msgstr "Sci-Fi e Fantasy"
 
-#: ../src/query.cpp:167
+#: ../src/query.cpp:222
 msgid "Science Fiction"
 msgstr "Scienza"
 
-#: ../src/query.cpp:168
+#: ../src/query.cpp:225
 msgid "Short"
 msgstr "Cortometraggio"
 
-#: ../src/query.cpp:190
+#: ../src/query.cpp:287
 msgid "Soap"
 msgstr "Soap Opera"
 
-#: ../src/query.cpp:169
+#: ../src/query.cpp:228
 msgid "Sporting Event"
 msgstr "Evento Sportivo"
 
-#: ../src/query.cpp:170
+#: ../src/query.cpp:231
 msgid "Sports Film"
 msgstr "Film Sportivo"
 
-#: ../src/query.cpp:171
+#: ../src/query.cpp:234
 msgid "Suspense"
 msgstr "Suspense"
 
-#: ../src/query.cpp:172
+#: ../src/query.cpp:237
 msgid "TV Movie"
 msgstr "TV film"
 
@@ -209,22 +209,22 @@ msgstr "TV film"
 msgid "TV-series"
 msgstr "Serie TV"
 
-#: ../src/query.cpp:191
+#: ../src/query.cpp:290
 msgid "Talk"
 msgstr "Talk"
 
-#: ../src/query.cpp:173
+#: ../src/query.cpp:240
 msgid "Thriller"
 msgstr "Thriller"
 
-#: ../src/query.cpp:174
+#: ../src/query.cpp:243
 msgid "War"
 msgstr "Guerra"
 
-#: ../src/query.cpp:192
+#: ../src/query.cpp:293
 msgid "War & Politics"
 msgstr "Guerra e Politica"
 
-#: ../src/query.cpp:175 ../src/query.cpp:193
+#: ../src/query.cpp:246 ../src/query.cpp:296
 msgid "Western"
 msgstr "Western"

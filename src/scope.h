@@ -17,12 +17,12 @@
  * different threads, so some form of interlocking is required
  * if shared data structures are used.
  */
-class Scope: public unity::scopes::ScopeBase {
-public:
+class Scope : public unity::scopes::ScopeBase {
+  public:
     /**
      * Called once at startup
      */
-    void start(std::string const&) override;
+    void start(std::string const &) override;
 
     /**
      * Called at shutdown
@@ -32,19 +32,19 @@ public:
     /**
      * Called each time a new preview is requested
      */
-    unity::scopes::PreviewQueryBase::UPtr preview(const unity::scopes::Result&,
-                                                  const unity::scopes::ActionMetadata&) override;
+    unity::scopes::PreviewQueryBase::UPtr
+    preview(const unity::scopes::Result &,
+            const unity::scopes::ActionMetadata &) override;
 
     /**
      * Called each time a new query is requested
      */
-    unity::scopes::SearchQueryBase::UPtr search(
-            unity::scopes::CannedQuery const& q,
-            unity::scopes::SearchMetadata const&) override;
+    unity::scopes::SearchQueryBase::UPtr
+    search(unity::scopes::CannedQuery const &q,
+           unity::scopes::SearchMetadata const &) override;
 
-protected:
+  protected:
     Config::Ptr config_;
 };
 
 #endif // SCOPE_H_
-
