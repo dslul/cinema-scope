@@ -13,4 +13,4 @@
 [location]
 type = string
 defaultValue =
-displayName = Override location
+displayName = Override location (es. IT/10129)

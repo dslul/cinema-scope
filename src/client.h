@@ -31,6 +31,7 @@ class Client {
     struct Film {
         std::string backdrop_path; // most-voted image path
         unsigned int id;
+        std::string imdb_id;
         std::string original_title; // usually the english title
         std::string release_date;   // format: yyyy-mm-dd
         std::string poster_path;    // poster image path

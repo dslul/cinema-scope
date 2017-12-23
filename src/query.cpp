@@ -106,12 +106,12 @@ void Query::run(sc::SearchReplyProxy const &reply) {
             auto metadata = search_metadata();
             if (metadata.has_location()) {
                 auto location = metadata.location();
-                if (location.has_city()) {
-                    place = location.city();
+                if (location.has_country_code() && location.has_zip_postal_code()) {
+                    place = location.country_code() + "/" + location.zip_postal_code();
                 }
             }
             if (place.empty() || place == "None") { // fallback
-                place = "London";
+                place = "IT/10100";
             }
         } else
             place = s_location;
@@ -334,8 +334,8 @@ void Query::run(sc::SearchReplyProxy const &reply) {
 
             for (const auto &flm : filmslist.films) {
                 sc::CategorisedResult res(films_cat);
-                res.set_uri("http://www.google.com/movies?near=" + place +
-                            "&q=" + flm.title + "&view=map");
+                res.set_uri("https://m.imdb.com/showtimes/title/" + flm.imdb_id +
+                            "/" + place);
                 res.set_title(flm.title);
                 // Set the rest of the attributes, art, artist, etc.
                 res.set_art(flm.poster_path);
@@ -361,8 +361,8 @@ void Query::run(sc::SearchReplyProxy const &reply) {
 
             for (const auto &flm : filmslist2.films) {
                 sc::CategorisedResult res(films_cat2);
-                res.set_uri("http://www.google.com/movies?near=" + place +
-                            "&q=" + flm.title);
+                res.set_uri("https://m.imdb.com/showtimes/title/" + flm.imdb_id +
+                            "/" + place);
                 res.set_title(flm.title);
                 // Set the rest of the attributes, art, artist, etc.
                 res.set_art(flm.poster_path);
@@ -405,8 +405,8 @@ void Query::run(sc::SearchReplyProxy const &reply) {
             // print searched film list
             for (const auto &flm : filmslist.films) {
                 sc::CategorisedResult res(films_cat);
-                res.set_uri("http://www.google.com/movies?near=" + place +
-                            "&q=" + flm.title);
+                res.set_uri("https://m.imdb.com/showtimes/title/" + flm.imdb_id +
+                            "/" + place);
                 res.set_title(flm.title);
                 res.set_art(flm.poster_path);
                 res["id"] = std::to_string(flm.id);

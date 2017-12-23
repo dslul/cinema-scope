@@ -106,7 +106,9 @@ Client::FilmRes Client::query_films(const string &movie_or_tv,
             title = item["name"].toString().toStdString();
 
         result.films.emplace_back(
-            Film{backdropimg, item["id"].toUInt(),
+            Film{backdropimg,
+                 item["id"].toUInt(),
+                 item["imdb_id"].toString().toStdString(),
                  item["original_title"].toString().toStdString(),
                  item["release_date"].toString().toStdString(), posterimg,
                  item["popularity"].toDouble(), title,
