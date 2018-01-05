@@ -30,7 +30,7 @@ msgstr "Aventure"
 
 #: ../src/query.cpp:311
 msgid "Airing today on TV"
-msgstr "Diffus aujourd'hui  la TV"
+msgstr "Diffusé aujourd'hui à la télévision"
 
 #: ../src/query.cpp:153 ../src/query.cpp:254
 msgid "Animation"
@@ -38,7 +38,7 @@ msgstr "Animation"
 
 #: ../src/query.cpp:156 ../src/query.cpp:257
 msgid "Comedy"
-msgstr "Comedie"
+msgstr "Comédie"
 
 #: ../src/query.cpp:308
 msgid "Coming soon"
@@ -66,11 +66,11 @@ msgstr "Oriental"
 
 #: ../src/query.cpp:266
 msgid "Education"
-msgstr "ducation"
+msgstr "Éducation"
 
 #: ../src/query.cpp:174
 msgid "Erotic"
-msgstr "rotique"
+msgstr "Érotique"
 
 #: ../src/query.cpp:177 ../src/query.cpp:269
 msgid "Family"
@@ -98,11 +98,11 @@ msgstr "Trouver un cinema"
 
 #: ../src/query.cpp:189
 msgid "Foreign"
-msgstr "tranger"
+msgstr "Étranger"
 
 #: ../src/preview.cpp:338
 msgid "Google it!"
-msgstr "Rechercher sur Google!"
+msgstr "Rechercher sur Google !"
 
 #: ../src/query.cpp:192
 msgid "History"
@@ -118,7 +118,7 @@ msgstr "Horreur"
 
 #: ../src/query.cpp:201
 msgid "Indie"
-msgstr "Indpendant"
+msgstr "Indépendant"
 
 #: ../src/query.cpp:272
 msgid "Kids"
@@ -138,15 +138,15 @@ msgstr "Musical"
 
 #: ../src/query.cpp:210 ../src/query.cpp:275
 msgid "Mystery"
-msgstr "Mystre"
+msgstr "Mystère"
 
 #: ../src/query.cpp:213
 msgid "Neo-Noir"
-msgstr "No-noir"
+msgstr "Néo-noir"
 
 #: ../src/query.cpp:278
 msgid "News"
-msgstr "Actualits"
+msgstr "Actualités"
 
 #: ../src/preview.cpp:289
 msgid "No reviews avaiable."
@@ -154,7 +154,7 @@ msgstr "Aucune critique disponible."
 
 #: ../src/query.cpp:317
 msgid "Popular TV shows"
-msgstr "Top sries TV"
+msgstr "Top séries télé"
 
 #: ../src/query.cpp:313
 msgid "Popular movies"
@@ -162,7 +162,7 @@ msgstr "Top films"
 
 #: ../src/query.cpp:281
 msgid "Reality"
-msgstr "Ralit"
+msgstr "Ralité"
 
 #: ../src/query.cpp:216
 msgid "Road Movie"
@@ -182,15 +182,15 @@ msgstr "Science-fiction"
 
 #: ../src/query.cpp:225
 msgid "Short"
-msgstr "Court-mtrage"
+msgstr "Court-métrage"
 
 #: ../src/query.cpp:287
 msgid "Soap"
-msgstr "Srie TV"
+msgstr "Série télé"
 
 #: ../src/query.cpp:228
 msgid "Sporting Event"
-msgstr "vnement sportif"
+msgstr "Évènement sportif"
 
 #: ../src/query.cpp:231
 msgid "Sports Film"
@@ -202,15 +202,15 @@ msgstr "Suspense"
 
 #: ../src/query.cpp:237
 msgid "TV Movie"
-msgstr "Film TV"
+msgstr "Film télé"
 
 #: ../src/query.cpp:125
 msgid "TV-series"
-msgstr "Sries TV"
+msgstr "Séries télé"
 
 #: ../src/query.cpp:290
 msgid "Talk"
-msgstr "Dbat"
+msgstr "Débat"
 
 #: ../src/query.cpp:240
 msgid "Thriller"
